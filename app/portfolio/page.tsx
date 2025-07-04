@@ -80,8 +80,8 @@ export default function Portfolio() {
   return (
     <>
       <BubbleLayer count={10} />
-      <div className="min-h-screen pt-32 pb-16">
-        <div className="max-width-container section-padding">
+      <div className="min-h-screen" style={{ marginTop: "5rem" }}>
+        <div className="max-width-container section-padding py-8">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
