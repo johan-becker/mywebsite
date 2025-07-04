@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 30 30 30;
+  }
+
+  .dark {
+    --background: 30 30 30;
+    --foreground: 255 255 255;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white dark:bg-[#1E1E1E] text-gray-900 dark:text-gray-100 transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .bubble {
+    @apply absolute rounded-full bg-gradient-to-br from-primary-400/20 to-primary-600/20 dark:from-primary-300/10 dark:to-primary-500/10 backdrop-blur-sm;
+    will-change: transform;
+  }
+
+  .bubble-interactive {
+    @apply cursor-pointer hover:scale-110 transition-transform duration-300;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .max-width-container {
+    @apply max-w-7xl mx-auto;
+  }
+}
