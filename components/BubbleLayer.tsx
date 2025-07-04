@@ -27,25 +27,25 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
   const mouseY = useMotionValue(0);
   const { scrollYProgress } = useScroll();
 
-  // Spring configs for smooth animations
-  const springConfig = { damping: 15, stiffness: 100 };
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
+  // Smoother spring configs
+  const smoothSpringConfig = { damping: 25, stiffness: 50, mass: 0.8 };
+  const mouseXSpring = useSpring(mouseX, smoothSpringConfig);
+  const mouseYSpring = useSpring(mouseY, smoothSpringConfig);
 
   useEffect(() => {
     const generateBubbles = () => {
       const newBubbles: Bubble[] = [];
       
-      // Generate random bubbles
+      // Generate random bubbles with better distribution
       for (let i = 0; i < count; i++) {
         newBubbles.push({
           id: i,
-          x: Math.random() * 100,
-          y: Math.random() * 100,
-          size: Math.random() * 60 + 20,
-          delay: Math.random() * 5,
-          duration: Math.random() * 20 + 15,
-          interactive: interactive && i < 3, // Make first 3 bubbles interactive
+          x: Math.random() * 90 + 5, // Keep bubbles away from edges
+          y: Math.random() * 90 + 5,
+          size: Math.random() * 80 + 30, // Larger size range
+          delay: Math.random() * 8, // Longer delay range
+          duration: Math.random() * 25 + 20, // Longer duration for smoother movement
+          interactive: interactive && i < 3,
           label: interactive && i === 0 ? "Portfolio" : 
                  interactive && i === 1 ? "Kontakt" : 
                  interactive && i === 2 ? "Mehr erfahren" : undefined,
@@ -78,7 +78,6 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
     } else if (bubble.label === "Kontakt") {
       window.location.href = "/kontakt";
     } else if (bubble.label === "Mehr erfahren") {
-      // Scroll to next section
       const nextSection = document.querySelector("#next-section");
       nextSection?.scrollIntoView({ behavior: "smooth" });
     }
@@ -87,22 +86,22 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
   return (
     <div ref={containerRef} className="fixed inset-0 overflow-hidden pointer-events-none">
       {bubbles.map((bubble) => {
-        // Parallax effect based on scroll
+        // Smoother parallax effect
         const parallaxY = useTransform(
           scrollYProgress,
           [0, 1],
-          [0, bubble.size * 2]
+          [0, bubble.size * 1.5]
         );
 
-        // Mouse parallax effect
+        // Smoother mouse parallax effect with reduced intensity
         const x = useTransform(
           mouseXSpring,
           [0, 1],
-          [bubble.x - 5, bubble.x + 5]
+          [bubble.x - 3, bubble.x + 3]
         );
         const y = useTransform(
           [mouseYSpring, parallaxY],
-          ([mouseY, scrollY]) => bubble.y + (mouseY as number - 0.5) * 10 + (scrollY as number)
+          ([mouseY, scrollY]) => bubble.y + (mouseY as number - 0.5) * 8 + (scrollY as number)
         );
 
         return (
@@ -118,23 +117,33 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
               y,
             }}
             animate={{
-              scale: [1, 1.1, 1],
-              opacity: [0.3, 0.5, 0.3],
+              scale: [1, 1.08, 1],
+              opacity: [0.2, 0.4, 0.2],
             }}
             transition={{
               duration: bubble.duration,
               delay: bubble.delay,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: [0.4, 0, 0.6, 1], // Custom cubic-bezier for smoother easing
+              repeatType: "reverse",
             }}
-            whileHover={bubble.interactive ? { scale: 1.2 } : {}}
+            whileHover={bubble.interactive ? { 
+              scale: 1.15,
+              transition: { duration: 0.3, ease: "easeOut" }
+            } : {}}
             onClick={() => bubble.interactive && handleBubbleClick(bubble)}
           >
             {bubble.interactive && bubble.label && (
               <motion.span
-                className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary dark:text-primary-300 opacity-0 hover:opacity-100 transition-opacity"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
+                className="absolute inset-0 flex items-center justify-center text-xs font-medium text-primary dark:text-primary-300 pointer-events-none"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileHover={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  transition: { duration: 0.2, ease: "easeOut" }
+                }}
+                animate={{ opacity: 0.6 }}
+                transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
               >
                 {bubble.label}
               </motion.span>
