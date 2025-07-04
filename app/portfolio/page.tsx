@@ -80,7 +80,7 @@ export default function Portfolio() {
   return (
     <>
       <BubbleLayer count={10} />
-      <div className="min-h-screen pt-24 pb-16">
+      <div className="min-h-screen pt-32 pb-16">
         <div className="max-width-container section-padding">
           {/* Header */}
           <motion.div

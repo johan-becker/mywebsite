@@ -8,7 +8,7 @@ export default function Kontakt() {
   return (
     <>
       <BubbleLayer count={15} />
-      <div className="min-h-screen pt-24 pb-16 relative overflow-hidden">
+      <div className="min-h-screen pt-32 pb-16 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 z-0">
           <motion.div
