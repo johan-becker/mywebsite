@@ -6,17 +6,31 @@ import { ArrowRight, Code } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16">
-      <div className="max-width-container section-padding relative z-10">
+    <section style={{
+      position: 'relative',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: '4rem'
+    }}>
+      <div className="max-width-container section-padding" style={{ position: 'relative', zIndex: 10 }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center"
+          style={{ textAlign: 'center' }}
         >
           {/* Large inflated headline */}
           <motion.h1
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-gray-900 dark:text-white mb-8"
+            style={{
+              fontSize: 'clamp(3rem, 12vw, 8rem)',
+              fontWeight: 900,
+              color: 'inherit',
+              marginBottom: '2rem',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em'
+            }}
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
@@ -26,7 +40,14 @@ export default function Hero() {
 
           {/* Intro text */}
           <motion.p
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8"
+            style={{
+              fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+              color: 'rgba(107, 114, 128, 1)',
+              maxWidth: '48rem',
+              margin: '0 auto 2rem auto',
+              lineHeight: 1.6
+            }}
+            className="dark:text-gray-300"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8 }}
@@ -36,39 +57,96 @@ export default function Hero() {
 
           {/* Current project */}
           <motion.div
-            className="bg-primary/10 dark:bg-primary/20 rounded-2xl p-6 max-w-2xl mx-auto mb-12"
+            style={{
+              backgroundColor: 'rgba(13, 110, 253, 0.1)',
+              borderRadius: '1rem',
+              padding: '1.5rem',
+              maxWidth: '32rem',
+              margin: '0 auto 3rem auto'
+            }}
+            className="dark:bg-primary/20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Code className="w-5 h-5 text-primary" />
-              <span className="text-sm font-semibold text-primary uppercase tracking-wider">
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              marginBottom: '0.75rem'
+            }}>
+              <Code style={{ width: '1.25rem', height: '1.25rem', color: '#0D6EFD' }} />
+              <span style={{
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                color: '#0D6EFD',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>
                 Aktuelles Projekt
               </span>
             </div>
-            <p className="text-gray-700 dark:text-gray-200">
+            <p style={{
+              color: 'rgba(55, 65, 81, 1)',
+              margin: 0,
+              lineHeight: 1.5
+            }} className="dark:text-gray-200">
               Ein Tool, das trackt, wer wann mit welchem Gerät einen Link geöffnet hat.
             </p>
           </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              justifyContent: 'center'
+            }}
+            className="sm:flex-row"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.8 }}
           >
             <Link
               href="/portfolio"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-white rounded-full hover:bg-primary-600 transition-colors font-semibold group"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                backgroundColor: '#0D6EFD',
+                color: 'white',
+                borderRadius: '2rem',
+                textDecoration: 'none',
+                fontWeight: 600,
+                transition: 'background-color 0.3s ease',
+                border: 'none'
+              }}
+              className="hover:bg-primary-600 group"
             >
               Portfolio ansehen
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight style={{ width: '1rem', height: '1rem' }} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/kontakt"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-semibold"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                padding: '1rem 2rem',
+                backgroundColor: 'rgba(243, 244, 246, 1)',
+                color: 'rgba(17, 24, 39, 1)',
+                borderRadius: '2rem',
+                textDecoration: 'none',
+                fontWeight: 600,
+                transition: 'background-color 0.3s ease',
+                border: 'none'
+              }}
+              className="dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
             >
               Kontakt aufnehmen
             </Link>
@@ -78,7 +156,12 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '50%',
+          transform: 'translateX(-50%)'
+        }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 0.8 }}
@@ -86,10 +169,25 @@ export default function Hero() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-6 h-10 border-2 border-gray-400 dark:border-gray-600 rounded-full flex justify-center"
+          style={{
+            width: '1.5rem',
+            height: '2.5rem',
+            border: '2px solid rgba(156, 163, 175, 1)',
+            borderRadius: '1rem',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+          className="dark:border-gray-600"
         >
           <motion.div
-            className="w-1 h-2 bg-gray-400 dark:bg-gray-600 rounded-full mt-2"
+            style={{
+              width: '0.25rem',
+              height: '0.5rem',
+              backgroundColor: 'rgba(156, 163, 175, 1)',
+              borderRadius: '0.125rem',
+              marginTop: '0.5rem'
+            }}
+            className="dark:bg-gray-600"
             animate={{ y: [0, 16, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           />

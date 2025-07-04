@@ -16,48 +16,72 @@ const navItems = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  
-  // Use try-catch to handle when ThemeProvider is not available
-  let theme = "light";
-  let toggleTheme = () => {};
-  
-  try {
-    const themeContext = useTheme();
-    theme = themeContext.theme;
-    toggleTheme = themeContext.toggleTheme;
-  } catch (error) {
-    // Theme context not available yet
-  }
+  const { theme, toggleTheme, mounted } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-[#1E1E1E]/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+    <nav style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 50,
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid rgba(229, 231, 235, 1)',
+    }} className="dark:bg-[#1E1E1E]/80 dark:border-gray-800">
       <div className="max-width-container section-padding">
-        <div className="flex items-center justify-between h-16">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '4rem'
+        }}>
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold text-gray-900 dark:text-white hover:text-primary transition-colors"
+            style={{
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+              color: theme === 'dark' ? '#ffffff' : '#111827',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease'
+            }}
           >
             JB
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div style={{
+            display: 'none',
+            alignItems: 'center',
+            gap: '2rem'
+          }} className="md:flex">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative font-medium transition-colors ${
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
-                }`}
+                style={{
+                  position: 'relative',
+                  fontWeight: '500',
+                  color: pathname === item.href 
+                    ? '#0D6EFD' 
+                    : theme === 'dark' ? '#d1d5db' : '#6b7280',
+                  textDecoration: 'none',
+                  transition: 'color 0.3s ease'
+                }}
               >
                 {item.label}
                 {pathname === item.href && (
                   <motion.div
                     layoutId="navbar-indicator"
-                    className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-primary"
+                    style={{
+                      position: 'absolute',
+                      bottom: '-21px',
+                      left: 0,
+                      right: 0,
+                      height: '2px',
+                      backgroundColor: '#0D6EFD'
+                    }}
                   />
                 )}
               </Link>
@@ -65,28 +89,46 @@ export default function Navigation() {
           </div>
 
           {/* Theme Toggle & Mobile Menu Button */}
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === "light" ? (
-                <Moon className="w-5 h-5" />
-              ) : (
-                <Sun className="w-5 h-5" />
-              )}
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {mounted && (
+              <button
+                onClick={toggleTheme}
+                style={{
+                  padding: '0.5rem',
+                  borderRadius: '0.5rem',
+                  backgroundColor: theme === 'dark' ? '#374151' : '#f3f4f6',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease'
+                }}
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? (
+                  <Moon style={{ width: '1.25rem', height: '1.25rem' }} />
+                ) : (
+                  <Sun style={{ width: '1.25rem', height: '1.25rem' }} />
+                )}
+              </button>
+            )}
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              style={{
+                display: 'block',
+                padding: '0.5rem',
+                borderRadius: '0.5rem',
+                backgroundColor: theme === 'dark' ? '#374151' : '#f3f4f6',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'background-color 0.3s ease'
+              }}
+              className="md:hidden"
               aria-label="Toggle menu"
             >
               {isOpen ? (
-                <X className="w-5 h-5" />
+                <X style={{ width: '1.25rem', height: '1.25rem' }} />
               ) : (
-                <Menu className="w-5 h-5" />
+                <Menu style={{ width: '1.25rem', height: '1.25rem' }} />
               )}
             </button>
           </div>
@@ -101,19 +143,33 @@ export default function Navigation() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-white dark:bg-[#1E1E1E] border-b border-gray-200 dark:border-gray-800"
+            style={{
+              backgroundColor: theme === 'dark' ? '#1E1E1E' : '#ffffff',
+              borderBottom: '1px solid',
+              borderBottomColor: theme === 'dark' ? '#374151' : '#e5e7eb'
+            }}
+            className="md:hidden"
           >
-            <div className="section-padding py-4 space-y-2">
+            <div className="section-padding" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               {navItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`block py-2 px-4 rounded-lg transition-colors ${
-                    pathname === item.href
-                      ? "bg-primary/10 text-primary"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  }`}
+                  style={{
+                    display: 'block',
+                    padding: '0.5rem 1rem',
+                    marginBottom: '0.5rem',
+                    borderRadius: '0.5rem',
+                    backgroundColor: pathname === item.href 
+                      ? 'rgba(13, 110, 253, 0.1)' 
+                      : 'transparent',
+                    color: pathname === item.href 
+                      ? '#0D6EFD' 
+                      : theme === 'dark' ? '#d1d5db' : '#6b7280',
+                    textDecoration: 'none',
+                    transition: 'all 0.3s ease'
+                  }}
                 >
                   {item.label}
                 </Link>
