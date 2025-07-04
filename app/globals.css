@@ -1,52 +1,105 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: 255 255 255;
-  --foreground: 30 30 30;
+  --background: 10 10 20;
+  --foreground: 255 255 255;
+  --primary: 0 255 255;
+  --secondary: 255 0 255;
+  --accent: 150 0 255;
 }
 
 .dark {
-  --background: 30 30 30;
+  --background: 5 5 15;
   --foreground: 255 255 255;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background: rgb(var(--background));
   color: rgb(var(--foreground));
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
   transition: all 0.3s ease;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.dark body {
-  background: #1E1E1E;
-  color: #f5f5f5;
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(150, 0, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Bubble styles */
+/* Animated background grid */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-move 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+/* Futuristic bubble styles */
 .bubble {
   position: absolute;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(13, 110, 253, 0.15), rgba(13, 110, 253, 0.25));
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(13, 110, 253, 0.2);
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 255, 0.3), rgba(150, 0, 255, 0.1));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   will-change: transform;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.6, 1);
   box-shadow: 
-    0 4px 20px rgba(13, 110, 253, 0.08),
-    0 1px 3px rgba(13, 110, 253, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 0 40px rgba(0, 255, 255, 0.3),
+    0 0 80px rgba(0, 255, 255, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  animation: pulse-glow 4s ease-in-out infinite;
 }
 
-.dark .bubble {
-  background: linear-gradient(135deg, rgba(13, 110, 253, 0.08), rgba(13, 110, 253, 0.15));
-  border-color: rgba(13, 110, 253, 0.1);
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 
+      0 0 40px rgba(0, 255, 255, 0.3),
+      0 0 80px rgba(0, 255, 255, 0.1),
+      inset 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  50% { 
+    box-shadow: 
+      0 0 60px rgba(0, 255, 255, 0.5),
+      0 0 120px rgba(0, 255, 255, 0.2),
+      inset 0 0 30px rgba(255, 255, 255, 0.2);
+  }
 }
 
 .bubble-interactive {
@@ -55,11 +108,167 @@ body {
 }
 
 .bubble-interactive:hover {
+  transform: translateY(-5px) scale(1.1);
   box-shadow: 
-    0 8px 32px rgba(13, 110, 253, 0.15),
-    0 4px 12px rgba(13, 110, 253, 0.12),
+    0 0 60px rgba(0, 255, 255, 0.6),
+    0 0 120px rgba(0, 255, 255, 0.3),
+    inset 0 0 30px rgba(255, 255, 255, 0.3);
+  border-color: rgba(0, 255, 255, 0.5);
+}
+
+/* Glassmorphism cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(0, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Neon text effects */
+.neon-text {
+  text-shadow: 
+    0 0 10px rgba(0, 255, 255, 0.8),
+    0 0 20px rgba(0, 255, 255, 0.6),
+    0 0 30px rgba(0, 255, 255, 0.4),
+    0 0 40px rgba(0, 255, 255, 0.2);
+}
+
+.neon-text-purple {
+  text-shadow: 
+    0 0 10px rgba(150, 0, 255, 0.8),
+    0 0 20px rgba(150, 0, 255, 0.6),
+    0 0 30px rgba(150, 0, 255, 0.4),
+    0 0 40px rgba(150, 0, 255, 0.2);
+}
+
+/* Futuristic buttons */
+.cyber-button {
+  position: relative;
+  padding: 1rem 2rem;
+  background: linear-gradient(45deg, rgba(0, 255, 255, 0.1), rgba(150, 0, 255, 0.1));
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border-radius: 50px;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+.cyber-button:hover {
   transform: translateY(-2px);
+  box-shadow: 
+    0 10px 30px rgba(0, 255, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.8);
+}
+
+/* Holographic effect */
+.holographic {
+  background: linear-gradient(
+    45deg,
+    #ff0080,
+    #ff8c00,
+    #40e0d0,
+    #ff0080
+  );
+  background-size: 400% 400%;
+  animation: holographic-shift 10s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes holographic-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glitch effect */
+.glitch {
+  position: relative;
+  color: white;
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: 
+    0.05em 0 0 rgba(255, 0, 0, 0.75),
+    -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+    0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 
+      0.05em 0 0 rgba(255, 0, 0, 0.75),
+      -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+      0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  14% {
+    text-shadow: 
+      0.05em 0 0 rgba(255, 0, 0, 0.75),
+      -0.025em -0.05em 0 rgba(0, 255, 0, 0.75),
+      0.025em 0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  15% {
+    text-shadow: 
+      -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  49% {
+    text-shadow: 
+      -0.05em -0.025em 0 rgba(255, 0, 0, 0.75),
+      0.025em 0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.05em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  50% {
+    text-shadow: 
+      0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75),
+      0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  99% {
+    text-shadow: 
+      0.025em 0.05em 0 rgba(255, 0, 0, 0.75),
+      0.05em 0 0 rgba(0, 255, 0, 0.75),
+      0 -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
+  100% {
+    text-shadow: 
+      -0.025em 0 0 rgba(255, 0, 0, 0.75),
+      -0.025em -0.025em 0 rgba(0, 255, 0, 0.75),
+      -0.025em -0.05em 0 rgba(0, 0, 255, 0.75);
+  }
 }
 
 /* Utility classes */
@@ -90,8 +299,28 @@ body {
 
 /* Fix H1 styling */
 h1 {
+  font-family: 'Orbitron', monospace;
   font-size: clamp(2.5rem, 8vw, 6rem);
   font-weight: 900;
   line-height: 1.1;
   margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(0, 255, 255, 0.5), rgba(150, 0, 255, 0.5));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(0, 255, 255, 0.7), rgba(150, 0, 255, 0.7));
 }

@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, Terminal } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/kontakt", label: "Kontakt" },
+  { href: "/", label: "HOME", icon: "01" },
+  { href: "/portfolio", label: "PORTFOLIO", icon: "02" },
+  { href: "/kontakt", label: "CONTACT", icon: "03" },
 ];
 
 export default function Navigation() {
@@ -25,28 +25,35 @@ export default function Navigation() {
       left: 0,
       right: 0,
       zIndex: 50,
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(12px)',
-      borderBottom: '1px solid rgba(229, 231, 235, 1)',
-    }} className="dark:bg-[#1E1E1E]/80 dark:border-gray-800">
+      background: 'rgba(10, 10, 20, 0.7)',
+      backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
+    }}>
       <div className="max-width-container section-padding">
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: '4rem'
+          height: '5rem'
         }}>
-          {/* Logo */}
+          {/* Logo with glitch effect */}
           <Link
             href="/"
             style={{
-              fontSize: '1.25rem',
-              fontWeight: 'bold',
-              color: theme === 'dark' ? '#ffffff' : '#111827',
+              fontSize: '1.5rem',
+              fontWeight: 900,
+              fontFamily: 'Orbitron, monospace',
+              color: '#00ffff',
               textDecoration: 'none',
-              transition: 'color 0.3s ease'
+              letterSpacing: '0.1em',
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
+            className="neon-text"
           >
+            <Terminal style={{ width: '1.5rem', height: '1.5rem' }} />
             JB
           </Link>
 
@@ -54,7 +61,7 @@ export default function Navigation() {
           <div style={{
             display: 'none',
             alignItems: 'center',
-            gap: '2rem'
+            gap: '2.5rem'
           }} className="md:flex">
             {navItems.map((item) => (
               <Link
@@ -62,25 +69,40 @@ export default function Navigation() {
                 href={item.href}
                 style={{
                   position: 'relative',
-                  fontWeight: '500',
+                  fontFamily: 'Space Grotesk, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '0.875rem',
+                  letterSpacing: '0.1em',
                   color: pathname === item.href 
-                    ? '#0D6EFD' 
-                    : theme === 'dark' ? '#d1d5db' : '#6b7280',
+                    ? '#00ffff' 
+                    : 'rgba(255, 255, 255, 0.7)',
                   textDecoration: 'none',
-                  transition: 'color 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
                 }}
+                className={pathname === item.href ? "neon-text" : ""}
               >
+                <span style={{
+                  fontSize: '0.75rem',
+                  opacity: 0.5,
+                  fontFamily: 'Orbitron, monospace'
+                }}>
+                  {item.icon}
+                </span>
                 {item.label}
                 {pathname === item.href && (
                   <motion.div
                     layoutId="navbar-indicator"
                     style={{
                       position: 'absolute',
-                      bottom: '-21px',
+                      bottom: '-26px',
                       left: 0,
                       right: 0,
                       height: '2px',
-                      backgroundColor: '#0D6EFD'
+                      background: 'linear-gradient(90deg, transparent, #00ffff, transparent)',
+                      boxShadow: '0 0 10px #00ffff'
                     }}
                   />
                 )}
@@ -91,46 +113,54 @@ export default function Navigation() {
           {/* Theme Toggle & Mobile Menu Button */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {mounted && (
-              <button
+              <motion.button
                 onClick={toggleTheme}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 style={{
-                  padding: '0.5rem',
-                  borderRadius: '0.5rem',
-                  backgroundColor: theme === 'dark' ? '#374151' : '#f3f4f6',
-                  border: 'none',
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                   cursor: 'pointer',
-                  transition: 'background-color 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
+                className="glass-card"
                 aria-label="Toggle theme"
               >
                 {theme === "light" ? (
-                  <Moon style={{ width: '1.25rem', height: '1.25rem' }} />
+                  <Moon style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
                 ) : (
-                  <Sun style={{ width: '1.25rem', height: '1.25rem' }} />
+                  <Sun style={{ width: '1.25rem', height: '1.25rem', color: '#ffff00' }} />
                 )}
-              </button>
+              </motion.button>
             )}
 
-            <button
+            <motion.button
               onClick={() => setIsOpen(!isOpen)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               style={{
                 display: 'block',
-                padding: '0.5rem',
-                borderRadius: '0.5rem',
-                backgroundColor: theme === 'dark' ? '#374151' : '#f3f4f6',
-                border: 'none',
+                padding: '0.75rem',
+                borderRadius: '0.75rem',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
                 cursor: 'pointer',
-                transition: 'background-color 0.3s ease'
+                transition: 'all 0.3s ease'
               }}
-              className="md:hidden"
+              className="md:hidden glass-card"
               aria-label="Toggle menu"
             >
               {isOpen ? (
-                <X style={{ width: '1.25rem', height: '1.25rem' }} />
+                <X style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
               ) : (
-                <Menu style={{ width: '1.25rem', height: '1.25rem' }} />
+                <Menu style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
               )}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -142,37 +172,60 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             style={{
-              backgroundColor: theme === 'dark' ? '#1E1E1E' : '#ffffff',
-              borderBottom: '1px solid',
-              borderBottomColor: theme === 'dark' ? '#374151' : '#e5e7eb'
+              background: 'rgba(10, 10, 20, 0.95)',
+              borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
+              backdropFilter: 'blur(20px)'
             }}
             className="md:hidden"
           >
             <div className="section-padding" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-              {navItems.map((item) => (
-                <Link
+              {navItems.map((item, index) => (
+                <motion.div
                   key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '0.5rem 1rem',
-                    marginBottom: '0.5rem',
-                    borderRadius: '0.5rem',
-                    backgroundColor: pathname === item.href 
-                      ? 'rgba(13, 110, 253, 0.1)' 
-                      : 'transparent',
-                    color: pathname === item.href 
-                      ? '#0D6EFD' 
-                      : theme === 'dark' ? '#d1d5db' : '#6b7280',
-                    textDecoration: 'none',
-                    transition: 'all 0.3s ease'
-                  }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
                 >
-                  {item.label}
-                </Link>
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      padding: '1rem',
+                      marginBottom: '0.5rem',
+                      borderRadius: '0.75rem',
+                      background: pathname === item.href 
+                        ? 'rgba(0, 255, 255, 0.1)' 
+                        : 'transparent',
+                      border: '1px solid',
+                      borderColor: pathname === item.href 
+                        ? 'rgba(0, 255, 255, 0.3)' 
+                        : 'transparent',
+                      color: pathname === item.href 
+                        ? '#00ffff' 
+                        : 'rgba(255, 255, 255, 0.7)',
+                      textDecoration: 'none',
+                      transition: 'all 0.3s ease',
+                      fontFamily: 'Space Grotesk, sans-serif',
+                      fontWeight: 600,
+                      fontSize: '0.875rem',
+                      letterSpacing: '0.1em'
+                    }}
+                  >
+                    <span style={{
+                      fontSize: '0.75rem',
+                      opacity: 0.5,
+                      fontFamily: 'Orbitron, monospace'
+                    }}>
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </motion.div>
