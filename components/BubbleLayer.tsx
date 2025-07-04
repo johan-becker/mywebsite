@@ -20,7 +20,7 @@ interface BubbleLayerProps {
   interactive?: boolean;
 }
 
-export default function BubbleLayer({ count = 20, interactive = false }: BubbleLayerProps) {
+export default function BubbleLayer({ count = 15, interactive = false }: BubbleLayerProps) {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,9 +38,10 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
     
     const generateBubbles = () => {
       const newBubbles: Bubble[] = [];
+      const visibleCount = Math.min(Math.max(count, 10), 20); // Ensure between 10-20 bubbles
       
       // Generate random bubbles with better distribution
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < visibleCount; i++) {
         newBubbles.push({
           id: i,
           x: Math.random() * 90 + 5, // Keep bubbles away from edges
@@ -59,68 +60,67 @@ export default function BubbleLayer({ count = 20, interactive = false }: BubbleL
     };
 
     generateBubbles();
+
+    // Regenerate bubbles periodically to ensure continuous movement
+    const interval = setInterval(generateBubbles, 30000);
+    return () => clearInterval(interval);
   }, [count, interactive]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!containerRef.current) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      
       const x = (e.clientX - rect.left) / rect.width;
       const y = (e.clientY - rect.top) / rect.height;
+      
       mouseX.set(x);
       mouseY.set(y);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY, mounted]);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
 
-  const handleBubbleClick = (bubble: Bubble) => {
-    if (bubble.label === "Portfolio") {
-      window.location.href = "/portfolio";
-    } else if (bubble.label === "Kontakt") {
-      window.location.href = "/kontakt";
-    } else if (bubble.label === "Mehr erfahren") {
-      const nextSection = document.querySelector("#next-section");
-      nextSection?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  // Don't render until mounted to prevent hydration issues
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return (
-    <div ref={containerRef} style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      overflow: 'hidden',
-      pointerEvents: 'none',
-      zIndex: 1
-    }}>
-      {bubbles.map((bubble) => {
-        return (
-          <BubbleItem
-            key={bubble.id}
-            bubble={bubble}
-            scrollYProgress={scrollYProgress}
-            mouseXSpring={mouseXSpring}
-            mouseYSpring={mouseYSpring}
-            onBubbleClick={handleBubbleClick}
-          />
-        );
-      })}
+    <div 
+      ref={containerRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}
+    >
+      {bubbles.map(bubble => (
+        <BubbleItem
+          key={bubble.id}
+          bubble={bubble}
+          scrollYProgress={scrollYProgress}
+          mouseXSpring={mouseXSpring}
+          mouseYSpring={mouseYSpring}
+          onBubbleClick={(bubble) => {
+            if (bubble.label === "Portfolio") {
+              window.location.href = "/portfolio";
+            } else if (bubble.label === "Kontakt") {
+              window.location.href = "/kontakt";
+            }
+          }}
+        />
+      ))}
     </div>
   );
 }
 
-// Separate component for individual bubbles to isolate useTransform
+// Separate component for individual bubbles
 function BubbleItem({ 
   bubble, 
   scrollYProgress, 
@@ -173,7 +173,7 @@ function BubbleItem({
         duration: bubble.duration,
         delay: bubble.delay,
         repeat: Infinity,
-        ease: [0.4, 0, 0.6, 1],
+        ease: "easeInOut",
         repeatType: "reverse",
       }}
       whileHover={bubble.interactive ? { 
