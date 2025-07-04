@@ -30,40 +30,43 @@ const config: Config = {
         sans: ['Poppins', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'float': 'float 25s ease-in-out infinite',
-        'float-slow': 'float 35s ease-in-out infinite',
-        'float-fast': 'float 18s ease-in-out infinite',
-        'float-smooth': 'float-smooth 30s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'bubble-drift': 'bubble-drift 40s linear infinite',
+        'float': 'float 30s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float-slow': 'float 40s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float-fast': 'float 25s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'float-smooth': 'float-smooth 35s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'bubble-drift': 'bubble-drift 45s linear infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0) translateX(0) rotate(0deg)' },
-          '25%': { transform: 'translateY(-15px) translateX(8px) rotate(1deg)' },
-          '50%': { transform: 'translateY(8px) translateX(-8px) rotate(-1deg)' },
-          '75%': { transform: 'translateY(-8px) translateX(15px) rotate(0.5deg)' },
+          '25%': { transform: 'translateY(-20px) translateX(10px) rotate(1deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '50%': { transform: 'translateY(10px) translateX(-10px) rotate(-1deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '75%': { transform: 'translateY(-10px) translateX(20px) rotate(0.5deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
         },
         'float-smooth': {
           '0%, 100%': { 
             transform: 'translateY(0) translateX(0) scale(1)',
-            opacity: '0.3'
+            opacity: '0.3',
+            transition: 'all 3s cubic-bezier(0.4, 0, 0.6, 1)'
           },
           '33%': { 
-            transform: 'translateY(-20px) translateX(15px) scale(1.05)',
-            opacity: '0.5'
+            transform: 'translateY(-25px) translateX(20px) scale(1.05)',
+            opacity: '0.5',
+            transition: 'all 3s cubic-bezier(0.4, 0, 0.6, 1)'
           },
           '66%': { 
-            transform: 'translateY(10px) translateX(-15px) scale(0.95)',
-            opacity: '0.4'
+            transform: 'translateY(15px) translateX(-20px) scale(0.95)',
+            opacity: '0.4',
+            transition: 'all 3s cubic-bezier(0.4, 0, 0.6, 1)'
           },
         },
         'bubble-drift': {
-          '0%': { transform: 'translateX(-10px) rotate(0deg)' },
-          '25%': { transform: 'translateX(10px) rotate(90deg)' },
-          '50%': { transform: 'translateX(20px) rotate(180deg)' },
-          '75%': { transform: 'translateX(-5px) rotate(270deg)' },
-          '100%': { transform: 'translateX(-10px) rotate(360deg)' },
+          '0%': { transform: 'translateX(-15px) rotate(0deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '25%': { transform: 'translateX(15px) rotate(90deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '50%': { transform: 'translateX(25px) rotate(180deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '75%': { transform: 'translateX(-10px) rotate(270deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
+          '100%': { transform: 'translateX(-15px) rotate(360deg)', transition: 'all 2s cubic-bezier(0.4, 0, 0.6, 1)' },
         },
       },
       transitionTimingFunction: {

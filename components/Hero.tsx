@@ -20,15 +20,7 @@ export default function Hero() {
 
   const textVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.8,
-        ease: "easeOut" as const,
-      },
-    }),
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
@@ -69,7 +61,7 @@ export default function Hero() {
             opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
-            duration: 4,
+            duration: 6,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -91,7 +83,7 @@ export default function Hero() {
             opacity: [0.4, 0.2, 0.4],
           }}
           transition={{
-            duration: 6,
+            duration: 8,
             repeat: Infinity,
             ease: "easeInOut"
           }}
@@ -103,10 +95,14 @@ export default function Hero() {
           initial="hidden"
           animate="visible"
           style={{ textAlign: 'center' }}
+          transition={{
+            staggerChildren: 0.2,
+            duration: 1.2,
+            ease: "easeInOut"
+          }}
         >
           {/* Glitch effect title */}
           <motion.div
-            custom={0}
             variants={textVariants}
             style={{ marginBottom: '2rem', position: 'relative' }}
           >
@@ -140,7 +136,6 @@ export default function Hero() {
 
           {/* Bio text with neon effect */}
           <motion.p
-            custom={2}
             variants={textVariants}
             className="neon-text"
             style={{
@@ -157,7 +152,6 @@ export default function Hero() {
 
           {/* Current project - Holographic card */}
           <motion.div
-            custom={3}
             variants={textVariants}
             className="glass-card"
             style={{
@@ -182,7 +176,7 @@ export default function Hero() {
                 x: ['0%', '200%'],
               }}
               transition={{
-                duration: 3,
+                duration: 5,
                 repeat: Infinity,
                 ease: "linear"
               }}
@@ -219,7 +213,6 @@ export default function Hero() {
 
           {/* CTA Buttons - Cyberpunk style */}
           <motion.div
-            custom={4}
             variants={textVariants}
             style={{
               display: 'flex',
@@ -281,7 +274,11 @@ export default function Hero() {
       >
         <motion.div
           animate={{ y: [0, 15, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          transition={{ 
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
           style={{
             width: '30px',
             height: '50px',
@@ -304,7 +301,11 @@ export default function Hero() {
               y: [0, 20, 0],
               opacity: [1, 0, 1]
             }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
           />
         </motion.div>
       </motion.div>
@@ -322,7 +323,7 @@ function TypewriterText({ text }: { text: string }) {
       const timeout = setTimeout(() => {
         setDisplayText(prev => prev + text[currentIndex]);
         setCurrentIndex(prev => prev + 1);
-      }, 50);
+      }, 80);
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, text]);

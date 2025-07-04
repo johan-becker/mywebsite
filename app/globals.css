@@ -29,7 +29,7 @@ body {
   background: rgb(var(--background));
   color: rgb(var(--foreground));
   font-family: 'Space Grotesk', system-ui, sans-serif;
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.6, 1);
   position: relative;
   overflow-x: hidden;
 }
@@ -79,12 +79,12 @@ body::after {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(0, 255, 255, 0.2);
   will-change: transform;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.6, 1);
   box-shadow: 
     0 0 40px rgba(0, 255, 255, 0.3),
     0 0 80px rgba(0, 255, 255, 0.1),
     inset 0 0 20px rgba(255, 255, 255, 0.1);
-  animation: pulse-glow 4s ease-in-out infinite;
+  animation: pulse-glow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse-glow {
@@ -93,18 +93,20 @@ body::after {
       0 0 40px rgba(0, 255, 255, 0.3),
       0 0 80px rgba(0, 255, 255, 0.1),
       inset 0 0 20px rgba(255, 255, 255, 0.1);
+    transition: all 3s cubic-bezier(0.4, 0, 0.6, 1);
   }
   50% { 
     box-shadow: 
       0 0 60px rgba(0, 255, 255, 0.5),
       0 0 120px rgba(0, 255, 255, 0.2),
       inset 0 0 30px rgba(255, 255, 255, 0.2);
+    transition: all 3s cubic-bezier(0.4, 0, 0.6, 1);
   }
 }
 
 .bubble-interactive {
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .bubble-interactive:hover {
@@ -114,6 +116,7 @@ body::after {
     0 0 120px rgba(0, 255, 255, 0.3),
     inset 0 0 30px rgba(255, 255, 255, 0.3);
   border-color: rgba(0, 255, 255, 0.5);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Glassmorphism cards */
@@ -125,6 +128,7 @@ body::after {
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .glass-card:hover {
@@ -133,6 +137,7 @@ body::after {
   box-shadow: 
     0 8px 32px rgba(0, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 /* Neon text effects */
