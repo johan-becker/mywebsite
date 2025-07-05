@@ -128,7 +128,10 @@ export default function SkillsGrid() {
                       : `1px solid ${category.color}50`,
                     borderRadius: theme === "professional" ? '6px' : '4px',
                     fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                    color: theme === "professional" ? 'var(--text-secondary)' : '#ffffff',
+                    color: theme === "professional" ? 'var(--text-secondary)' : category.color,
+                    textShadow: theme === "professional" 
+                      ? 'none' 
+                      : `0 0 8px ${category.color}80`,
                     boxShadow: theme === "professional" 
                       ? 'none' 
                       : `0 0 10px ${category.color}30`,
