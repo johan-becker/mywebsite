@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, Code2, Zap, Globe, Database, Smartphone, Cpu, Shield, Rocket } from "lucide-react";
+import { Calendar, Code2, Zap, Globe, Database, Smartphone, Cpu, Shield, Rocket, Briefcase } from "lucide-react";
 import BubbleLayer from "@/components/BubbleLayer";
+import { useTheme } from "@/components/ThemeProvider";
 
 const projects = [
   {
@@ -77,9 +78,11 @@ const itemVariants = {
 };
 
 export default function Portfolio() {
+  const { theme } = useTheme();
+
   return (
     <>
-      <BubbleLayer count={10} />
+      {theme === "matrix" && <BubbleLayer count={10} />}
       <div className="min-h-screen" style={{ marginTop: "5rem" }}>
         <div className="max-width-container section-padding py-8">
           {/* Header */}
@@ -91,16 +94,23 @@ export default function Portfolio() {
           >
             <h1 className="glitch" style={{
               fontSize: 'clamp(2.5rem, 6vw, 4rem)',
-              fontFamily: 'Orbitron, monospace',
-              marginBottom: '1rem'
+              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+              marginBottom: '1rem',
+              color: theme === "professional" ? 'var(--text-primary)' : undefined,
+              fontWeight: theme === "professional" ? 700 : undefined
             }}>
-              PORTFOLIO
+              {theme === "professional" ? "Portfolio" : "PORTFOLIO"}
             </h1>
             <p className="neon-text" style={{
               fontSize: '1.25rem',
-              opacity: 0.8
+              opacity: 0.8,
+              color: theme === "professional" ? 'var(--text-secondary)' : undefined,
+              fontFamily: theme === "professional" ? 'var(--font-secondary)' : undefined
             }}>
-              Cutting-edge projects & technical expertise
+              {theme === "professional" 
+                ? "Ausgewählte Projekte und technische Expertise"
+                : "Cutting-edge projects & technical expertise"
+              }
             </p>
           </motion.div>
 
@@ -118,11 +128,11 @@ export default function Portfolio() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-              fontFamily: 'Orbitron, monospace',
-              color: '#00ffff'
+              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+              color: theme === "professional" ? 'var(--primary-color)' : '#00ffff'
             }} className="neon-text">
-              <Rocket className="w-8 h-8" />
-              FEATURED PROJECTS
+              {theme === "professional" ? <Briefcase className="w-8 h-8" /> : <Rocket className="w-8 h-8" />}
+              {theme === "professional" ? "Projekte" : "FEATURED PROJECTS"}
             </h2>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -131,13 +141,13 @@ export default function Portfolio() {
                   key={index}
                   variants={itemVariants}
                   whileHover={{ 
-                    scale: 1.05,
-                    rotateY: 5,
-                    rotateX: -5
+                    scale: theme === "professional" ? 1.02 : 1.05,
+                    rotateY: theme === "professional" ? 0 : 5,
+                    rotateX: theme === "professional" ? 0 : -5
                   }}
                   style={{
-                    transformStyle: 'preserve-3d',
-                    perspective: '1000px'
+                    transformStyle: theme === "professional" ? 'flat' : 'preserve-3d',
+                    perspective: theme === "professional" ? 'none' : '1000px'
                   }}
                   className="glass-card"
                 >
@@ -146,32 +156,34 @@ export default function Portfolio() {
                     position: 'relative',
                     overflow: 'hidden'
                   }}>
-                    {/* Animated gradient background */}
-                    <motion.div
-                      initial={{ rotate: 0, opacity: 0 }}
-                      animate={{ 
-                        rotate: 360,
-                        opacity: 0.3
-                      }}
-                      style={{
-                        position: 'absolute',
-                        top: '-50%',
-                        left: '-50%',
-                        width: '200%',
-                        height: '200%',
-                        background: `radial-gradient(circle, ${project.color} 0%, transparent 70%)`
-                      }}
-                      transition={{
-                        rotate: {
-                          duration: 20,
-                          repeat: Infinity,
-                          ease: "linear"
-                        },
-                        opacity: {
-                          duration: 0.5
-                        }
-                      }}
-                    />
+                    {/* Animated gradient background - only in matrix theme */}
+                    {theme === "matrix" && (
+                      <motion.div
+                        initial={{ rotate: 0, opacity: 0 }}
+                        animate={{ 
+                          rotate: 360,
+                          opacity: 0.3
+                        }}
+                        style={{
+                          position: 'absolute',
+                          top: '-50%',
+                          left: '-50%',
+                          width: '200%',
+                          height: '200%',
+                          background: `radial-gradient(circle, ${project.color} 0%, transparent 70%)`
+                        }}
+                        transition={{
+                          rotate: {
+                            duration: 20,
+                            repeat: Infinity,
+                            ease: "linear"
+                          },
+                          opacity: {
+                            duration: 0.5
+                          }
+                        }}
+                      />
+                    )}
                     
                     <div style={{ position: 'relative', zIndex: 1 }}>
                       <div style={{
@@ -182,7 +194,9 @@ export default function Portfolio() {
                       }}>
                         <div style={{
                           padding: '0.75rem',
-                          background: `linear-gradient(135deg, ${project.color}, transparent)`,
+                          background: theme === "professional" 
+                            ? 'var(--primary-color)'
+                            : `linear-gradient(135deg, ${project.color}, transparent)`,
                           borderRadius: '0.75rem',
                           color: 'white'
                         }}>
@@ -192,14 +206,17 @@ export default function Portfolio() {
                           fontSize: '0.75rem',
                           padding: '0.25rem 0.75rem',
                           background: project.status === 'ACTIVE' 
-                            ? 'rgba(0, 255, 0, 0.2)' 
-                            : 'rgba(255, 255, 255, 0.1)',
+                            ? (theme === "professional" ? 'var(--accent-color)' : 'rgba(0, 255, 0, 0.2)')
+                            : (theme === "professional" ? 'var(--background-secondary)' : 'rgba(255, 255, 255, 0.1)'),
                           border: `1px solid ${project.status === 'ACTIVE' 
-                            ? 'rgba(0, 255, 0, 0.5)' 
-                            : 'rgba(255, 255, 255, 0.2)'}`,
+                            ? (theme === "professional" ? 'var(--accent-color)' : 'rgba(0, 255, 0, 0.5)')
+                            : (theme === "professional" ? 'var(--border-color)' : 'rgba(255, 255, 255, 0.2)')}`,
                           borderRadius: '1rem',
-                          fontFamily: 'Orbitron, monospace',
-                          letterSpacing: '0.1em'
+                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                          letterSpacing: '0.1em',
+                          color: project.status === 'ACTIVE' 
+                            ? 'white'
+                            : (theme === "professional" ? 'var(--text-secondary)' : undefined)
                         }}>
                           {project.status}
                         </span>
@@ -209,8 +226,9 @@ export default function Portfolio() {
                         fontSize: '1.25rem',
                         fontWeight: 700,
                         marginBottom: '0.75rem',
-                        fontFamily: 'Orbitron, monospace',
-                        letterSpacing: '0.05em'
+                        fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                        letterSpacing: theme === "professional" ? 'normal' : '0.05em',
+                        color: theme === "professional" ? 'var(--text-primary)' : undefined
                       }}>
                         {project.title}
                       </h3>
@@ -219,7 +237,9 @@ export default function Portfolio() {
                         fontSize: '0.875rem',
                         opacity: 0.8,
                         marginBottom: '1.5rem',
-                        lineHeight: 1.6
+                        lineHeight: 1.6,
+                        fontFamily: theme === "professional" ? 'var(--font-secondary)' : undefined,
+                        color: theme === "professional" ? 'var(--text-secondary)' : undefined
                       }}>
                         {project.description}
                       </p>
@@ -235,10 +255,15 @@ export default function Portfolio() {
                             style={{
                               fontSize: '0.75rem',
                               padding: '0.25rem 0.75rem',
-                              background: 'rgba(0, 255, 255, 0.1)',
-                              border: '1px solid rgba(0, 255, 255, 0.3)',
+                              background: theme === "professional" 
+                                ? 'var(--background-secondary)' 
+                                : 'rgba(0, 255, 255, 0.1)',
+                              border: `1px solid ${theme === "professional" 
+                                ? 'var(--border-color)' 
+                                : 'rgba(0, 255, 255, 0.3)'}`,
                               borderRadius: '1rem',
-                              fontFamily: 'Space Grotesk, sans-serif'
+                              fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'Space Grotesk, sans-serif',
+                              color: theme === "professional" ? 'var(--text-secondary)' : undefined
                             }}
                           >
                             {tech}
@@ -265,11 +290,11 @@ export default function Portfolio() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-              fontFamily: 'Orbitron, monospace',
-              color: '#ff00ff'
+              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+              color: theme === "professional" ? 'var(--secondary-color)' : '#ff00ff'
             }} className="neon-text-purple">
               <Zap className="w-8 h-8" />
-              TECH MATRIX
+              {theme === "professional" ? "Technologien" : "TECH MATRIX"}
             </h2>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -277,10 +302,12 @@ export default function Portfolio() {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: theme === "professional" ? 1.02 : 1.05 }}
                   className="glass-card"
                   style={{
-                    background: `linear-gradient(135deg, ${category.color}, transparent)`,
+                    background: theme === "professional" 
+                      ? 'var(--background-card)'
+                      : `linear-gradient(135deg, ${category.color}, transparent)`,
                     backdropFilter: 'blur(10px)',
                     padding: '1.5rem'
                   }}
@@ -288,9 +315,10 @@ export default function Portfolio() {
                   <h3 style={{
                     fontWeight: 700,
                     marginBottom: '1rem',
-                    fontFamily: 'Orbitron, monospace',
+                    fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
                     fontSize: '1.125rem',
-                    letterSpacing: '0.1em'
+                    letterSpacing: theme === "professional" ? 'normal' : '0.1em',
+                    color: theme === "professional" ? 'var(--text-primary)' : undefined
                   }}>
                     {category.name}
                   </h3>
@@ -306,15 +334,17 @@ export default function Portfolio() {
                           marginBottom: '0.5rem',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: '0.5rem'
+                          gap: '0.5rem',
+                          fontFamily: theme === "professional" ? 'var(--font-secondary)' : undefined,
+                          color: theme === "professional" ? 'var(--text-secondary)' : undefined
                         }}
                       >
                         <span style={{
                           width: '4px',
                           height: '4px',
-                          background: '#00ffff',
+                          background: theme === "professional" ? 'var(--primary-color)' : '#00ffff',
                           borderRadius: '50%',
-                          boxShadow: '0 0 8px #00ffff'
+                          boxShadow: theme === "professional" ? 'none' : '0 0 8px #00ffff'
                         }} />
                         {item}
                       </motion.li>
@@ -339,11 +369,11 @@ export default function Portfolio() {
               display: 'flex',
               alignItems: 'center',
               gap: '0.75rem',
-              fontFamily: 'Orbitron, monospace',
-              color: '#ffff00'
+              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+              color: theme === "professional" ? 'var(--warning-color)' : '#ffff00'
             }}>
               <Calendar className="w-8 h-8" />
-              TIMELINE
+              {theme === "professional" ? "Werdegang" : "TIMELINE"}
             </h2>
             
             <div style={{ position: 'relative' }}>
@@ -358,8 +388,12 @@ export default function Portfolio() {
                   transform: 'translateX(-50%)',
                   height: '100%',
                   width: '2px',
-                  background: 'linear-gradient(to bottom, #00ffff, #ff00ff, #ffff00)',
-                  boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)',
+                  background: theme === "professional" 
+                    ? 'linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--warning-color))'
+                    : 'linear-gradient(to bottom, #00ffff, #ff00ff, #ffff00)',
+                  boxShadow: theme === "professional" 
+                    ? '0 0 10px rgba(37, 99, 235, 0.3)'
+                    : '0 0 20px rgba(0, 255, 255, 0.5)',
                   transformOrigin: 'top'
                 }} 
               />
@@ -368,21 +402,27 @@ export default function Portfolio() {
               {[
                 {
                   date: "2024",
-                  title: "CURRENT MISSION",
-                  description: "Building next-generation web applications with cutting-edge technologies",
-                  color: "#00ffff"
+                  title: theme === "professional" ? "Aktuelle Projekte" : "CURRENT MISSION",
+                  description: theme === "professional" 
+                    ? "Entwicklung moderner Web-Anwendungen mit Next.js und TypeScript"
+                    : "Building next-generation web applications with cutting-edge technologies",
+                  color: theme === "professional" ? "var(--primary-color)" : "#00ffff"
                 },
                 {
                   date: "2023",
-                  title: "TECH EVOLUTION",
-                  description: "Mastered AI/ML integration and blockchain development",
-                  color: "#ff00ff"
+                  title: theme === "professional" ? "Technologie-Fokus" : "TECH EVOLUTION",
+                  description: theme === "professional"
+                    ? "Spezialisierung auf AI/ML Integration und Blockchain-Entwicklung"
+                    : "Mastered AI/ML integration and blockchain development",
+                  color: theme === "professional" ? "var(--secondary-color)" : "#ff00ff"
                 },
                 {
                   date: "2022",
-                  title: "SYSTEM ARCHITECT",
-                  description: "Designed and deployed scalable cloud infrastructures",
-                  color: "#ffff00"
+                  title: theme === "professional" ? "System-Architektur" : "SYSTEM ARCHITECT",
+                  description: theme === "professional"
+                    ? "Design und Deployment skalierbarer Cloud-Infrastrukturen"
+                    : "Designed and deployed scalable cloud infrastructures",
+                  color: theme === "professional" ? "var(--warning-color)" : "#ffff00"
                 },
               ].map((item, index) => (
                 <motion.div
@@ -404,12 +444,14 @@ export default function Portfolio() {
                     <div className="glass-card" style={{
                       padding: '1.5rem',
                       borderColor: item.color,
-                      boxShadow: `0 0 30px ${item.color}40`
+                      boxShadow: theme === "professional" 
+                        ? `0 4px 24px ${item.color}20`
+                        : `0 0 30px ${item.color}40`
                     }}>
                       <span style={{
                         color: item.color,
                         fontWeight: 700,
-                        fontFamily: 'Orbitron, monospace',
+                        fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
                         fontSize: '0.875rem'
                       }}>
                         {item.date}
@@ -418,14 +460,17 @@ export default function Portfolio() {
                         fontSize: '1.25rem',
                         fontWeight: 700,
                         margin: '0.5rem 0',
-                        fontFamily: 'Orbitron, monospace'
+                        fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                        color: theme === "professional" ? 'var(--text-primary)' : undefined
                       }}>
                         {item.title}
                       </h3>
                       <p style={{
                         fontSize: '0.875rem',
                         opacity: 0.8,
-                        margin: 0
+                        margin: 0,
+                        fontFamily: theme === "professional" ? 'var(--font-secondary)' : undefined,
+                        color: theme === "professional" ? 'var(--text-secondary)' : undefined
                       }}>
                         {item.description}
                       </p>
@@ -441,8 +486,10 @@ export default function Portfolio() {
                     height: '20px',
                     background: item.color,
                     borderRadius: '50%',
-                    border: '4px solid rgb(10, 10, 20)',
-                    boxShadow: `0 0 20px ${item.color}`
+                    border: `4px solid ${theme === "professional" ? 'var(--background-primary)' : 'rgb(10, 10, 20)'}`,
+                    boxShadow: theme === "professional" 
+                      ? `0 0 10px ${item.color}50`
+                      : `0 0 20px ${item.color}`
                   }} />
                 </motion.div>
               ))}
