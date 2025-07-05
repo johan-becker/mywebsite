@@ -229,6 +229,8 @@ export default function Hero() {
             }}
           >
             <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: '200%' }}
               style={{
                 position: 'absolute',
                 top: '-50%',
@@ -237,9 +239,6 @@ export default function Hero() {
                 height: '200%',
                 background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.2) 50%, transparent 70%)',
                 transform: 'rotate(45deg)',
-              }}
-              animate={{
-                x: ['0%', '200%'],
               }}
               transition={{
                 duration: 5,
@@ -271,7 +270,7 @@ export default function Hero() {
                 color: '#00ff00',
                 fontFamily: 'Orbitron, monospace'
               }}>
-                                 {'>'}{'>'}{'>'}  Konstruktion einer neuen digitalen Matrix-Infrastruktur
+                {'>'}{'>'}{'>'} Konstruktion einer neuen digitalen Matrix-Infrastruktur
               </p>
               
               {/* Matrix System Status */}
@@ -283,6 +282,26 @@ export default function Hero() {
                 ].map((item, i) => (
                   <motion.div
                     key={i}
+                    initial={{ 
+                      opacity: 0,
+                      y: 20,
+                      scale: 0.9
+                    }}
+                    animate={{ 
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      boxShadow: ['0 0 5px #00ff00', '0 0 20px #00ff00', '0 0 5px #00ff00']
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: i * 0.3,
+                      boxShadow: {
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: i * 0.3
+                      }
+                    }}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -294,14 +313,6 @@ export default function Hero() {
                       color: '#00ff00',
                       fontSize: '0.75rem',
                       fontFamily: 'Orbitron, monospace'
-                    }}
-                    animate={{
-                      boxShadow: ['0 0 5px #00ff00', '0 0 20px #00ff00', '0 0 5px #00ff00']
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.3
                     }}
                   >
                     <item.icon style={{ width: '1rem', height: '1rem' }} />
