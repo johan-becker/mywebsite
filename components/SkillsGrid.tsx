@@ -79,9 +79,15 @@ export default function SkillsGrid() {
             style={{
               background: theme === "professional" 
                 ? 'var(--background-card)'
-                : `linear-gradient(135deg, ${category.color}, transparent)`,
+                : 'rgba(0, 20, 0, 0.8)',
               backdropFilter: 'blur(10px)',
-              padding: '1.5rem'
+              padding: '1.5rem',
+              border: theme === "professional" 
+                ? '1px solid var(--border-color)'
+                : `1px solid ${category.color}40`,
+              boxShadow: theme === "professional" 
+                ? '0 4px 24px var(--shadow-color)'
+                : `0 0 20px ${category.color}20`
             }}
           >
             <h3 style={{
@@ -90,7 +96,8 @@ export default function SkillsGrid() {
               fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
               fontSize: '1.125rem',
               letterSpacing: theme === "professional" ? 'normal' : '0.1em',
-              color: theme === "professional" ? 'var(--text-primary)' : undefined
+              color: theme === "professional" ? 'var(--text-primary)' : '#ffffff',
+              textShadow: theme === "professional" ? 'none' : '0 0 10px rgba(255, 255, 255, 0.8)'
             }}>
               {category.name}
             </h3>
@@ -110,13 +117,13 @@ export default function SkillsGrid() {
                     padding: '0.5rem',
                     background: theme === "professional" 
                       ? 'var(--background-secondary)'
-                      : 'rgba(255, 255, 255, 0.1)',
+                      : 'rgba(0, 0, 0, 0.3)',
                     border: theme === "professional" 
                       ? '1px solid var(--border-color)'
-                      : '1px solid rgba(255, 255, 255, 0.2)',
+                      : '1px solid rgba(255, 255, 255, 0.3)',
                     borderRadius: theme === "professional" ? '6px' : '4px',
                     fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                    color: theme === "professional" ? 'var(--text-secondary)' : undefined
+                    color: theme === "professional" ? 'var(--text-secondary)' : '#ffffff'
                   }}
                 >
                   {skill}
