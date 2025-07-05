@@ -357,3 +357,161 @@ h1 {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, rgba(0, 255, 255, 0.7), rgba(150, 0, 255, 0.7));
 }
+
+.mission-glitch {
+  position: relative;
+  animation: mission-glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.mission-glitch::before,
+.mission-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mission-glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff000d;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: mission-glitch-anim-2 5s infinite linear alternate-reverse;
+}
+
+.mission-glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00fff9;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: mission-glitch-anim-3 1s infinite linear alternate-reverse;
+}
+
+@keyframes mission-glitch-anim-1 {
+  0% {
+    clip: rect(19px, 9999px, 29px, 0);
+    transform: skew(0.55deg);
+  }
+  5% {
+    clip: rect(37px, 9999px, 78px, 0);
+    transform: skew(0.03deg);
+  }
+  10% {
+    clip: rect(90px, 9999px, 13px, 0);
+    transform: skew(0.96deg);
+  }
+  15% {
+    clip: rect(13px, 9999px, 90px, 0);
+    transform: skew(0.76deg);
+  }
+  20% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  25% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  30% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  35% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  40% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  45% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  50% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  55% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  60% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  65% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  70% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  75% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  80% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  85% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  90% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  95% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+  100% {
+    clip: rect(89px, 9999px, 99px, 0);
+    transform: skew(0.68deg);
+  }
+}
+
+@keyframes mission-glitch-anim-2 {
+  0% {
+    clip: rect(65px, 9999px, 99px, 0);
+  }
+  20% {
+    clip: rect(15px, 9999px, 59px, 0);
+  }
+  40% {
+    clip: rect(35px, 9999px, 79px, 0);
+  }
+  60% {
+    clip: rect(85px, 9999px, 19px, 0);
+  }
+  80% {
+    clip: rect(45px, 9999px, 69px, 0);
+  }
+  100% {
+    clip: rect(95px, 9999px, 29px, 0);
+  }
+}
+
+@keyframes mission-glitch-anim-3 {
+  0% {
+    clip: rect(95px, 9999px, 29px, 0);
+  }
+  20% {
+    clip: rect(45px, 9999px, 69px, 0);
+  }
+  40% {
+    clip: rect(85px, 9999px, 19px, 0);
+  }
+  60% {
+    clip: rect(35px, 9999px, 79px, 0);
+  }
+  80% {
+    clip: rect(15px, 9999px, 59px, 0);
+  }
+  100% {
+    clip: rect(65px, 9999px, 99px, 0);
+  }
+}

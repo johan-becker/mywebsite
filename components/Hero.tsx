@@ -249,14 +249,19 @@ export default function Hero() {
             />
             
             <div style={{ position: 'relative', zIndex: 2 }}>
-              <h3 style={{
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                marginBottom: '1rem',
-                color: '#00ff00',
-                fontFamily: 'Orbitron, monospace',
-                textShadow: '0 0 10px #00ff00'
-              }}>
+              <h3 
+                className="mission-glitch"
+                data-text="[CURRENT_MISSION]"
+                style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  marginBottom: '1rem',
+                  color: '#00ff00',
+                  fontFamily: 'Orbitron, monospace',
+                  textShadow: '0 0 10px #00ff00',
+                  display: 'inline-block'
+                }}
+              >
                 [CURRENT_MISSION]
               </h3>
               <p style={{
