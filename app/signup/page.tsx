@@ -10,7 +10,7 @@ import Link from 'next/link';
 // Force dynamic rendering to avoid build-time environment variable issues
 export const dynamic = 'force-dynamic';
 
-export default function Login() {
+export default function Signup() {
   const { theme } = useTheme();
 
   return (
@@ -60,9 +60,12 @@ export default function Login() {
         )}
 
         <div className="relative z-10 w-full" data-testid="auth-container">
-          <AuthForm mode="login" onToggleMode={() => {}} />
+          <AuthForm 
+            mode="signup" 
+            onToggleMode={() => {}} // Not used since we have separate pages
+          />
           
-          {/* Link to signup page */}
+          {/* Link to login page */}
           <div className="text-center mt-6">
             <p style={{
               fontSize: '0.875rem',
@@ -70,10 +73,10 @@ export default function Login() {
               color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
               opacity: 0.8
             }}>
-              {theme === "professional" ? "Noch kein Konto?" : ">>> NO ACCOUNT?"}
+              {theme === "professional" ? "Bereits ein Konto?" : ">>> ALREADY REGISTERED?"}
             </p>
             <Link 
-              href="/signup"
+              href="/login"
               style={{
                 color: theme === "professional" ? 'var(--primary-color)' : '#00ff00',
                 fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
@@ -84,7 +87,7 @@ export default function Login() {
                 display: 'inline-block'
               }}
             >
-              {theme === "professional" ? "Hier registrieren" : "[CREATE_NEW_ACCOUNT]"}
+              {theme === "professional" ? "Hier anmelden" : "[ACCESS_EXISTING_ACCOUNT]"}
             </Link>
           </div>
         </div>

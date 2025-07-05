@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/components/ThemeProvider';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 
 interface AuthFormProps {
@@ -13,6 +14,7 @@ interface AuthFormProps {
 
 export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
   const { theme } = useTheme();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -81,6 +83,11 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
 
         if (error) throw error;
         setMessage('Successfully logged in!');
+        
+        // Redirect to the cool person Easter egg page after successful login
+        setTimeout(() => {
+          router.push('/coolperson');
+        }, 1500);
       }
     } catch (error: any) {
       setError(error.message);
