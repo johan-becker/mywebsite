@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
 import AuthForm from '@/components/AuthForm';
@@ -8,11 +9,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 // Force dynamic rendering to avoid build-time environment variable issues
 export const dynamic = 'force-dynamic';
 
-export default function Login() {
+function LoginContent() {
   const { theme } = useTheme();
   const searchParams = useSearchParams();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -146,5 +148,13 @@ export default function Login() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LoginContent />
+    </Suspense>
   );
 } 

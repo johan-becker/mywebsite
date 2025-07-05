@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
 import { supabase } from '@/lib/supabase';
@@ -8,8 +9,9 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import ProfessionalBackground from '@/components/ProfessionalBackground';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
   const { theme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -484,5 +486,13 @@ export default function ResetPassword() {
         </motion.div>
       </div>
     </>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 } 
