@@ -46,6 +46,13 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
     setError('');
     setMessage('');
 
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      setError('Authentication service is not configured. Please contact the administrator.');
+      setLoading(false);
+      return;
+    }
+
     try {
       if (mode === 'signup') {
         if (password !== confirmPassword) {

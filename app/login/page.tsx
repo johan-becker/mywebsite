@@ -6,6 +6,9 @@ import AuthForm from '@/components/AuthForm';
 import ProfessionalBackground from '@/components/ProfessionalBackground';
 import Head from 'next/head';
 
+// Force dynamic rendering to avoid build-time environment variable issues
+export const dynamic = 'force-dynamic';
+
 export default function Login() {
   const { theme } = useTheme();
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
