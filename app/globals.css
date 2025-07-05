@@ -291,6 +291,11 @@ body::before {
   animation: matrix-pulse 8s ease-in-out infinite;
 }
 
+/* Hide matrix background in professional mode */
+[data-theme="professional"] body::before {
+  display: none;
+}
+
 @keyframes matrix-pulse {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.7; }
@@ -311,6 +316,11 @@ body::after {
   animation: matrix-grid 15s linear infinite;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Hide matrix grid in professional mode */
+[data-theme="professional"] body::after {
+  display: none;
 }
 
 @keyframes matrix-grid {
@@ -343,6 +353,20 @@ body::after {
     inset 0 0 50px rgba(0, 255, 0, 0.6);
   border-color: rgba(0, 255, 0, 1);
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Professional Bubble Styles */
+[data-theme="professional"] .bubble {
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="professional"] .bubble-interactive:hover {
+  box-shadow: 
+    0 0 60px rgba(37, 99, 235, 0.3),
+    0 0 120px rgba(37, 99, 235, 0.2),
+    inset 0 0 30px rgba(37, 99, 235, 0.2);
+  border-color: rgba(37, 99, 235, 0.4);
 }
 
 /* Enhanced Matrix Glass Cards */

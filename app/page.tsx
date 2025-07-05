@@ -1,10 +1,17 @@
+"use client";
+
 import Hero from "@/components/Hero";
 import BubbleLayer from "@/components/BubbleLayer";
+import ProfessionalBackground from "@/components/ProfessionalBackground";
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function Home() {
+  const { theme } = useTheme();
+  
   return (
     <>
-      <BubbleLayer count={25} interactive={true} />
+      {theme === "matrix" && <BubbleLayer count={25} interactive={true} />}
+      {theme === "professional" && <ProfessionalBackground variant="subtle" />}
       <Hero />
       
       {/* Additional section for scroll demonstration */}
