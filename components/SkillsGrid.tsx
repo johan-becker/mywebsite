@@ -79,15 +79,15 @@ export default function SkillsGrid() {
             style={{
               background: theme === "professional" 
                 ? 'var(--background-card)'
-                : 'rgba(0, 20, 0, 0.8)',
+                : `linear-gradient(135deg, ${category.color}15, rgba(0, 20, 0, 0.9), ${category.color}05)`,
               backdropFilter: 'blur(10px)',
               padding: '1.5rem',
               border: theme === "professional" 
                 ? '1px solid var(--border-color)'
-                : `1px solid ${category.color}40`,
+                : `2px solid ${category.color}60`,
               boxShadow: theme === "professional" 
                 ? '0 4px 24px var(--shadow-color)'
-                : `0 0 20px ${category.color}20`
+                : `0 0 30px ${category.color}40, inset 0 0 20px ${category.color}10`
             }}
           >
             <h3 style={{
@@ -96,8 +96,8 @@ export default function SkillsGrid() {
               fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
               fontSize: '1.125rem',
               letterSpacing: theme === "professional" ? 'normal' : '0.1em',
-              color: theme === "professional" ? 'var(--text-primary)' : '#ffffff',
-              textShadow: theme === "professional" ? 'none' : '0 0 10px rgba(255, 255, 255, 0.8)'
+              color: theme === "professional" ? 'var(--text-primary)' : category.color,
+              textShadow: theme === "professional" ? 'none' : `0 0 15px ${category.color}, 0 0 30px ${category.color}80`
             }}>
               {category.name}
             </h3>
@@ -112,18 +112,27 @@ export default function SkillsGrid() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * i }}
+                  whileHover={theme === "matrix" ? {
+                    scale: 1.02,
+                    boxShadow: `0 0 20px ${category.color}60`,
+                    borderColor: category.color
+                  } : {}}
                   style={{
                     fontSize: '0.875rem',
                     padding: '0.5rem',
                     background: theme === "professional" 
                       ? 'var(--background-secondary)'
-                      : 'rgba(0, 0, 0, 0.3)',
+                      : `rgba(0, 0, 0, 0.6)`,
                     border: theme === "professional" 
                       ? '1px solid var(--border-color)'
-                      : '1px solid rgba(255, 255, 255, 0.3)',
+                      : `1px solid ${category.color}50`,
                     borderRadius: theme === "professional" ? '6px' : '4px',
                     fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                    color: theme === "professional" ? 'var(--text-secondary)' : '#ffffff'
+                    color: theme === "professional" ? 'var(--text-secondary)' : '#ffffff',
+                    boxShadow: theme === "professional" 
+                      ? 'none' 
+                      : `0 0 10px ${category.color}30`,
+                    transition: 'all 0.3s ease'
                   }}
                 >
                   {skill}
