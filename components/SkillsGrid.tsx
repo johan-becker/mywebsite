@@ -7,22 +7,22 @@ const skills = [
   {
     name: "Frontend",
     items: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    color: "#ff0040"  // Rot-Pink (oben)
+    color: "#00ff00"  // Grün
   },
   {
     name: "Backend", 
     items: ["Node.js", "Python", "PostgreSQL", "Redis"],
-    color: "#ff8000"  // Orange
+    color: "#00ffff"  // Blau
   },
   {
     name: "DevOps",
     items: ["Docker", "AWS", "CI/CD", "Kubernetes"],
-    color: "#00ff80"  // Grün
+    color: "#ff8000"  // Orange
   },
   {
     name: "Tools",
     items: ["Git", "VS Code", "Figma", "Linux"],
-    color: "#0080ff"  // Blau (unten)
+    color: "#ff0000"  // Rot
   }
 ];
 
@@ -79,7 +79,7 @@ export default function SkillsGrid() {
             left: 0,
             right: 0,
             height: '200%',
-            background: 'linear-gradient(180deg, #ff004020, #ff800020, #00ff8020, #0080ff20, transparent)',
+            background: 'linear-gradient(180deg, #00ff0020, #00ffff20, #ff800020, #ff000020, transparent)',
             pointerEvents: 'none',
             zIndex: 0
           }}

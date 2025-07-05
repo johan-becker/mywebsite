@@ -345,6 +345,7 @@ body::after {
   overflow: hidden;
 }
 
+/* Matrix theme only - green swipe animation */
 .glass-card::before {
   content: '';
   position: absolute;
@@ -358,6 +359,11 @@ body::after {
 
 .glass-card:hover::before {
   left: 100%;
+}
+
+/* Hide green swipe animation in professional theme */
+[data-theme="professional"] .glass-card::before {
+  display: none;
 }
 
 .glass-card:hover {
@@ -486,6 +492,7 @@ body::after {
   clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 100%, 20px 100%);
 }
 
+/* Matrix theme only - green swipe animation */
 .cyber-button::before {
   content: '';
   position: absolute;
@@ -499,6 +506,11 @@ body::after {
 
 .cyber-button:hover::before {
   left: 100%;
+}
+
+/* Hide green swipe animation in professional theme */
+[data-theme="professional"] .cyber-button::before {
+  display: none;
 }
 
 .cyber-button:hover {

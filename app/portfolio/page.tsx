@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
 import ProfessionalBackground from "@/components/ProfessionalBackground";
 import { useTheme } from "@/components/ThemeProvider";
+import Link from 'next/link';
 
 // Dynamic imports with SSR disabled
 const ProjectGrid = dynamic(() => import("@/components/ProjectGrid"), { ssr: false });
@@ -72,6 +73,23 @@ export default function Portfolio() {
             }} className="neon-text">
               <Calendar className="w-8 h-8" />
               {theme === "professional" ? "Werdegang" : "TIMELINE"}
+              {theme === "matrix" && (
+                <Link href="/login" style={{ textDecoration: 'none' }}>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 0,
+                      marginLeft: '0.5rem'
+                    }}
+                  />
+                </Link>
+              )}
             </h2>
             
             <div className="space-y-8">
