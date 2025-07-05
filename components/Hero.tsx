@@ -2,11 +2,12 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Code, Zap, Cpu } from "lucide-react";
+import { ArrowRight, Code, Zap, Cpu, Terminal, Database, Wifi } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [matrixRain, setMatrixRain] = useState<string[]>([]);
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 150]);
 
@@ -16,6 +17,34 @@ export default function Hero() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Matrix Digital Rain Effect
+  useEffect(() => {
+    const chars = "アカサタナハマヤラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズヅブプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    const columns = Math.floor(window.innerWidth / 20);
+    const drops: number[] = [];
+    
+    for (let i = 0; i < columns; i++) {
+      drops[i] = 1;
+    }
+    
+    const generateRain = () => {
+      const newRain: string[] = [];
+      for (let i = 0; i < columns; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        newRain.push(char);
+        
+        if (drops[i] * 20 > window.innerHeight && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      setMatrixRain(newRain);
+    };
+
+    const interval = setInterval(generateRain, 100);
+    return () => clearInterval(interval);
   }, []);
 
   const textVariants = {
@@ -31,9 +60,40 @@ export default function Hero() {
       alignItems: 'center',
       justifyContent: 'center',
       paddingTop: '4rem',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      background: 'linear-gradient(180deg, #000000 0%, #001100 50%, #000000 100%)'
     }}>
-      {/* Animated background elements */}
+      {/* Matrix Digital Rain */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        pointerEvents: 'none',
+        zIndex: 1,
+        opacity: 0.3
+      }}>
+        {matrixRain.map((char, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              left: `${i * 20}px`,
+              top: `${Math.random() * window.innerHeight}px`,
+              color: '#00ff00',
+              fontSize: '14px',
+              fontFamily: 'monospace',
+              animation: `matrix-fall ${Math.random() * 3 + 2}s linear infinite`,
+              textShadow: '0 0 10px #00ff00'
+            }}
+          >
+            {char}
+          </div>
+        ))}
+      </div>
+
+      {/* Enhanced Matrix Background Elements */}
       <div style={{
         position: 'absolute',
         top: '50%',
@@ -42,7 +102,7 @@ export default function Hero() {
         height: '200%',
         transform: `translate(-50%, -50%) translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
         pointerEvents: 'none',
-        opacity: 0.5
+        opacity: 0.6
       }}>
         <motion.div
           style={{
@@ -51,14 +111,14 @@ export default function Hero() {
             left: '10%',
             width: '300px',
             height: '300px',
-            background: 'radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(0, 255, 0, 0.4) 0%, transparent 70%)',
             borderRadius: '50%',
             filter: 'blur(40px)',
             y
           }}
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.7, 0.3],
           }}
           transition={{
             duration: 6,
@@ -73,7 +133,7 @@ export default function Hero() {
             right: '10%',
             width: '400px',
             height: '400px',
-            background: 'radial-gradient(circle, rgba(150, 0, 255, 0.3) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%)',
             borderRadius: '50%',
             filter: 'blur(60px)',
             y: useTransform(scrollY, [0, 500], [0, -100])
@@ -101,22 +161,23 @@ export default function Hero() {
             ease: "easeInOut"
           }}
         >
-          {/* Glitch effect title */}
+          {/* Matrix-Style Title */}
           <motion.div
             variants={textVariants}
             style={{ marginBottom: '2rem', position: 'relative' }}
           >
-            <h1 className="glitch" style={{
+            <h1 className="glitch" data-text="JOHAN BECKER" style={{
               fontSize: 'clamp(3rem, 12vw, 8rem)',
               fontFamily: 'Orbitron, monospace',
               fontWeight: 900,
               margin: 0,
-              position: 'relative'
+              position: 'relative',
+              color: '#00ff00'
             }}>
               JOHAN BECKER
             </h1>
             
-            {/* Subtitle with typing effect */}
+            {/* Matrix Subtitle */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -124,17 +185,18 @@ export default function Hero() {
               style={{
                 marginTop: '1rem',
                 fontSize: 'clamp(0.875rem, 2vw, 1.25rem)',
-                fontFamily: 'Space Grotesk, sans-serif',
-                color: 'rgba(0, 255, 255, 0.8)',
+                fontFamily: 'Orbitron, monospace',
+                color: '#00ff00',
                 textTransform: 'uppercase',
-                letterSpacing: '0.2em'
+                letterSpacing: '0.3em',
+                textShadow: '0 0 10px #00ff00'
               }}
             >
-              <TypewriterText text="FULL-STACK DEVELOPER // TECH ENTHUSIAST // INNOVATOR" />
+              <TypewriterText text="&gt;&gt;&gt; SYSTEM_ARCHITECT // MATRIX_DEVELOPER // CYBER_INNOVATOR" />
             </motion.div>
           </motion.div>
 
-          {/* Bio text with neon effect */}
+          {/* Matrix Bio */}
           <motion.p
             variants={textVariants}
             className="neon-text"
@@ -143,14 +205,16 @@ export default function Hero() {
               maxWidth: '48rem',
               margin: '0 auto 3rem auto',
               lineHeight: 1.8,
-              opacity: 0.9
+              opacity: 0.9,
+              fontFamily: 'Orbitron, monospace',
+              color: '#00ff00'
             }}
           >
-            Ich entwickle futuristische digitale Lösungen mit modernsten Technologien.
-            Spezialisiert auf innovative Web-Anwendungen und technische Automatisierung.
+            [INITIATING_PROTOCOL] Entwicklung futuristischer digitaler Systeme mit Matrix-Technologien.
+            Spezialisiert auf Cyber-Architekturen und digitale Realitäten.
           </motion.p>
 
-          {/* Current project - Holographic card */}
+          {/* Matrix Status Display */}
           <motion.div
             variants={textVariants}
             className="glass-card"
@@ -159,7 +223,9 @@ export default function Hero() {
               margin: '0 auto 3rem auto',
               padding: '2rem',
               position: 'relative',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              border: '2px solid #00ff00',
+              background: 'rgba(0, 20, 0, 0.8)'
             }}
           >
             <motion.div
@@ -169,7 +235,7 @@ export default function Hero() {
                 left: '-50%',
                 width: '200%',
                 height: '200%',
-                background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%)',
+                background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.2) 50%, transparent 70%)',
                 transform: 'rotate(45deg)',
               }}
               animate={{
@@ -182,85 +248,115 @@ export default function Hero() {
               }}
             />
             
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem',
-              marginBottom: '1rem',
-              position: 'relative'
-            }}>
-              <Cpu style={{ width: '1.5rem', height: '1.5rem', color: '#00ffff' }} />
-              <span className="holographic" style={{
-                fontSize: '1rem',
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <h3 style={{
+                fontSize: '1.5rem',
                 fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em'
+                marginBottom: '1rem',
+                color: '#00ff00',
+                fontFamily: 'Orbitron, monospace',
+                textShadow: '0 0 10px #00ff00'
               }}>
-                CURRENT PROJECT
-              </span>
+                [CURRENT_MISSION]
+              </h3>
+              <p style={{
+                fontSize: '1rem',
+                lineHeight: 1.6,
+                marginBottom: '1.5rem',
+                color: '#00ff00',
+                fontFamily: 'Orbitron, monospace'
+              }}>
+                                 {'>'}{'>'}{'>'}  Konstruktion einer neuen digitalen Matrix-Infrastruktur
+              </p>
+              
+              {/* Matrix System Status */}
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                {[
+                  { icon: Terminal, label: 'TERMINAL', status: 'ONLINE' },
+                  { icon: Database, label: 'DATABASE', status: 'SYNC' },
+                  { icon: Wifi, label: 'NETWORK', status: 'SECURE' }
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem 1rem',
+                      border: '1px solid #00ff00',
+                      borderRadius: '20px',
+                      background: 'rgba(0, 255, 0, 0.1)',
+                      color: '#00ff00',
+                      fontSize: '0.75rem',
+                      fontFamily: 'Orbitron, monospace'
+                    }}
+                    animate={{
+                      boxShadow: ['0 0 5px #00ff00', '0 0 20px #00ff00', '0 0 5px #00ff00']
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: i * 0.3
+                    }}
+                  >
+                    <item.icon style={{ width: '1rem', height: '1rem' }} />
+                    <span>{item.label}: {item.status}</span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <p style={{
-              color: 'rgba(255, 255, 255, 0.9)',
-              margin: 0,
-              lineHeight: 1.6,
-              fontSize: '1.125rem',
-              position: 'relative'
-            }}>
-              Advanced Link Tracking System - Real-time Analytics & Device Fingerprinting
-            </p>
           </motion.div>
 
-          {/* CTA Buttons - Cyberpunk style */}
+          {/* Matrix Action Buttons */}
           <motion.div
             variants={textVariants}
             style={{
               display: 'flex',
-              flexDirection: 'column',
               gap: '1.5rem',
               justifyContent: 'center',
-              alignItems: 'center'
+              flexWrap: 'wrap'
             }}
-            className="sm:flex-row"
           >
-            <Link
-              href="/portfolio"
-              className="cyber-button group"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.75rem',
-                textDecoration: 'none',
-                position: 'relative'
-              }}
-            >
-              <Zap style={{ width: '1.25rem', height: '1.25rem' }} />
-              EXPLORE PORTFOLIO
-              <ArrowRight style={{ width: '1.25rem', height: '1.25rem' }} className="group-hover:translate-x-1 transition-transform" />
+            <Link href="/portfolio" style={{ textDecoration: 'none' }}>
+              <motion.button
+                className="cyber-button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  background: 'rgba(0, 255, 0, 0.1)',
+                  border: '2px solid #00ff00',
+                  color: '#00ff00'
+                }}
+              >
+                <Code style={{ width: '1.25rem', height: '1.25rem' }} />
+                [ACCESS_PORTFOLIO]
+                <ArrowRight style={{ width: '1.25rem', height: '1.25rem' }} />
+              </motion.button>
             </Link>
             
-            <Link
-              href="/kontakt"
-              className="cyber-button"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.75rem',
-                textDecoration: 'none',
-                background: 'linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1))',
-                borderColor: 'rgba(255, 0, 255, 0.5)'
-              }}
-            >
-              <Code style={{ width: '1.25rem', height: '1.25rem' }} />
-              INITIALIZE CONTACT
+            <Link href="/kontakt" style={{ textDecoration: 'none' }}>
+              <motion.button
+                className="cyber-button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                style={{
+                  background: 'rgba(0, 255, 255, 0.1)',
+                  border: '2px solid #00ffff',
+                  color: '#00ffff'
+                }}
+              >
+                <Zap style={{ width: '1.25rem', height: '1.25rem' }} />
+                [ESTABLISH_CONTACT]
+              </motion.button>
             </Link>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Futuristic scroll indicator */}
+      {/* Matrix Scroll Indicator */}
       <motion.div
         style={{
           position: 'absolute',
@@ -282,20 +378,22 @@ export default function Hero() {
           style={{
             width: '30px',
             height: '50px',
-            border: '2px solid rgba(0, 255, 255, 0.5)',
+            border: '2px solid #00ff00',
             borderRadius: '25px',
             display: 'flex',
             justifyContent: 'center',
-            position: 'relative'
+            position: 'relative',
+            boxShadow: '0 0 20px #00ff00'
           }}
         >
           <motion.div
             style={{
               width: '4px',
               height: '10px',
-              backgroundColor: 'rgba(0, 255, 255, 0.8)',
+              backgroundColor: '#00ff00',
               borderRadius: '2px',
-              marginTop: '8px'
+              marginTop: '8px',
+              boxShadow: '0 0 10px #00ff00'
             }}
             animate={{ 
               y: [0, 20, 0],
@@ -313,7 +411,7 @@ export default function Hero() {
   );
 }
 
-// Typewriter component
+// Enhanced Matrix Typewriter
 function TypewriterText({ text }: { text: string }) {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -334,9 +432,9 @@ function TypewriterText({ text }: { text: string }) {
       <motion.span
         animate={{ opacity: [1, 0] }}
         transition={{ duration: 0.5, repeat: Infinity }}
-        style={{ color: 'rgba(0, 255, 255, 1)' }}
+        style={{ color: '#00ff00', textShadow: '0 0 10px #00ff00' }}
       >
-        |
+        █
       </motion.span>
     </span>
   );
