@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navigation from "@/components/Navigation";
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
   title: "Johan Becker - Portfolio",
@@ -51,12 +52,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de" suppressHydrationWarning>
+      <head />
       <body className="antialiased">
         <ThemeProvider>
           <Navigation />
           <main className="min-h-screen">
             {children}
           </main>
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
