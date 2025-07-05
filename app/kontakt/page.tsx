@@ -234,7 +234,7 @@ export default function Kontakt() {
                   }}
                 >
                   <a
-                    href="https://github.com/johanbecker"
+                    href="https://github.com/johan-becker"
                 target="_blank"
                 rel="noopener noreferrer"
                     style={{
@@ -282,7 +282,7 @@ export default function Kontakt() {
                         fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
                         color: theme === "professional" ? 'var(--text-secondary)' : '#00ffff'
                       }}>
-                        github.com/johanbecker
+                        github.com/johan-becker
                   </p>
                 </div>
                   </a>
