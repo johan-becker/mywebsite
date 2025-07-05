@@ -175,6 +175,18 @@ function BubbleItem({
   return (
     <motion.div
       className={`bubble ${bubble.interactive ? "bubble-interactive" : ""}`}
+      initial={{
+        x: `${baseX}%`,
+        y: `${baseY}%`,
+        scale: 0.8,
+        opacity: 0
+      }}
+      animate={{
+        x: `${x.get()}%`,
+        y: `${y.get()}%`,
+        scale: showBubbles ? [1, 1.08, 1] : 0.8,
+        opacity: showBubbles ? [0.2, 0.4, 0.2] : 0,
+      }}
       style={{
         position: 'absolute',
         left: 0,
@@ -182,13 +194,7 @@ function BubbleItem({
         width: bubble.size,
         height: bubble.size,
         pointerEvents: bubble.interactive ? 'auto' : 'none',
-        opacity: showBubbles ? 1 : 0,
-      }}
-      animate={{
-        x: `${x.get()}%`,
-        y: `${y.get()}%`,
-        scale: [1, 1.08, 1],
-        opacity: [0.2, 0.4, 0.2],
+        willChange: 'transform',
       }}
       transition={{
         x: { type: "spring", stiffness: 100, damping: 30 },
@@ -196,16 +202,16 @@ function BubbleItem({
         scale: {
           duration: bubble.duration,
           delay: bubble.delay,
-          repeat: Infinity,
+          repeat: showBubbles ? Infinity : 0,
           ease: "easeInOut",
-          repeatType: "reverse",
+          repeatType: "reverse" as const,
         },
         opacity: {
-          duration: bubble.duration * 1.2,
-          delay: bubble.delay,
-          repeat: Infinity,
+          duration: showBubbles ? bubble.duration * 1.2 : 0.5,
+          delay: showBubbles ? bubble.delay : 0,
+          repeat: showBubbles ? Infinity : 0,
           ease: "easeInOut",
-          repeatType: "reverse",
+          repeatType: "reverse" as const,
         }
       }}
       whileHover={bubble.interactive ? { 

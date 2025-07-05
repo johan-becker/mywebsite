@@ -148,22 +148,28 @@ export default function Portfolio() {
                   }}>
                     {/* Animated gradient background */}
                     <motion.div
+                      initial={{ rotate: 0, opacity: 0 }}
+                      animate={{ 
+                        rotate: 360,
+                        opacity: 0.3
+                      }}
                       style={{
                         position: 'absolute',
                         top: '-50%',
                         left: '-50%',
                         width: '200%',
                         height: '200%',
-                        background: `radial-gradient(circle, ${project.color} 0%, transparent 70%)`,
-                        opacity: 0.3
-                      }}
-                      animate={{
-                        rotate: 360
+                        background: `radial-gradient(circle, ${project.color} 0%, transparent 70%)`
                       }}
                       transition={{
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
+                        rotate: {
+                          duration: 20,
+                          repeat: Infinity,
+                          ease: "linear"
+                        },
+                        opacity: {
+                          duration: 0.5
+                        }
                       }}
                     />
                     
@@ -342,15 +348,21 @@ export default function Portfolio() {
             
             <div style={{ position: 'relative' }}>
               {/* Timeline line */}
-              <div style={{
-                position: 'absolute',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                height: '100%',
-                width: '2px',
-                background: 'linear-gradient(to bottom, #00ffff, #ff00ff, #ffff00)',
-                boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)'
-              }} />
+              <motion.div 
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ duration: 1, delay: 0.5 }}
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  height: '100%',
+                  width: '2px',
+                  background: 'linear-gradient(to bottom, #00ffff, #ff00ff, #ffff00)',
+                  boxShadow: '0 0 20px rgba(0, 255, 255, 0.5)',
+                  transformOrigin: 'top'
+                }} 
+              />
               
               {/* Timeline items */}
               {[

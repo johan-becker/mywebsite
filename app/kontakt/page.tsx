@@ -130,6 +130,10 @@ export default function Kontakt() {
                   clipPath: 'polygon(0 0, calc(100% - 30px) 0, 100% 30px, 100% 100%, 30px 100%, 0 calc(100% - 30px))'
                 }}>
                   <motion.div
+                    initial={{ x: '-100%' }}
+                    animate={{
+                      x: ['0%', '200%'],
+                    }}
                     style={{
                       position: 'absolute',
                       top: '-50%',
@@ -138,9 +142,6 @@ export default function Kontakt() {
                       height: '200%',
                       background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.1) 50%, transparent 70%)',
                       transform: 'rotate(45deg)',
-                    }}
-                    animate={{
-                      x: ['0%', '200%'],
                     }}
                     transition={{
                       duration: 3,

@@ -64,16 +64,20 @@ export default function Hero() {
       background: 'linear-gradient(180deg, #000000 0%, #001100 50%, #000000 100%)'
     }}>
       {/* Matrix Digital Rain */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        pointerEvents: 'none',
-        zIndex: 1,
-        opacity: 0.3
-      }}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.3 }}
+        transition={{ duration: 1, delay: 0.5 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'none',
+          zIndex: 1
+        }}
+      >
         {matrixRain.map((char, i) => (
           <div
             key={i}
@@ -91,20 +95,29 @@ export default function Hero() {
             {char}
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Enhanced Matrix Background Elements */}
-      <div style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        width: '200%',
-        height: '200%',
-        transform: `translate(-50%, -50%) translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
-        pointerEvents: 'none',
-        opacity: 0.6
-      }}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.6 }}
+        transition={{ duration: 1.5, delay: 0.3 }}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          width: '200%',
+          height: '200%',
+          transform: `translate(-50%, -50%) translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
+          pointerEvents: 'none'
+        }}
+      >
         <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.7, 0.3],
+          }}
           style={{
             position: 'absolute',
             top: '20%',
@@ -116,17 +129,27 @@ export default function Hero() {
             filter: 'blur(40px)',
             y
           }}
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.3, 0.7, 0.3],
-          }}
           transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut"
+            scale: {
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            },
+            opacity: {
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }
           }}
         />
         <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.4, 0.2, 0.4],
+          }}
           style={{
             position: 'absolute',
             bottom: '20%',
@@ -138,17 +161,22 @@ export default function Hero() {
             filter: 'blur(60px)',
             y: useTransform(scrollY, [0, 500], [0, -100])
           }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.4, 0.2, 0.4],
-          }}
           transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
+            scale: {
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            },
+            opacity: {
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5
+            }
           }}
         />
-      </div>
+      </motion.div>
 
       <div className="max-width-container section-padding" style={{ position: 'relative', zIndex: 10 }}>
         <motion.div
