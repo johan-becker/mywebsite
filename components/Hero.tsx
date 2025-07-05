@@ -61,13 +61,14 @@ export default function Hero() {
       justifyContent: 'center',
       paddingTop: '4rem',
       overflow: 'hidden',
-      background: 'linear-gradient(180deg, #000000 0%, #001100 50%, #000000 100%)'
+      background: 'linear-gradient(180deg, var(--background-primary) 0%, var(--background-secondary) 50%, var(--background-primary) 100%)'
     }}>
-      {/* Matrix Digital Rain */}
+      {/* Matrix Digital Rain - Only show in matrix theme */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.3 }}
         transition={{ duration: 1, delay: 0.5 }}
+        className="matrix-only"
         style={{
           position: 'absolute',
           top: 0,
@@ -85,11 +86,11 @@ export default function Hero() {
               position: 'absolute',
               left: `${i * 20}px`,
               top: `${Math.random() * window.innerHeight}px`,
-              color: '#00ff00',
+              color: 'var(--primary-color)',
               fontSize: '14px',
               fontFamily: 'monospace',
               animation: `matrix-fall ${Math.random() * 3 + 2}s linear infinite`,
-              textShadow: '0 0 10px #00ff00'
+              textShadow: '0 0 10px var(--primary-color)'
             }}
           >
             {char}
@@ -102,6 +103,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.6 }}
         transition={{ duration: 1.5, delay: 0.3 }}
+        className="matrix-only"
         style={{
           position: 'absolute',
           top: '50%',

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Sun, Moon, Terminal } from "lucide-react";
+import { Menu, X, Code, Briefcase, Terminal } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,16 +19,19 @@ export default function Navigation() {
   const { theme, toggleTheme, mounted } = useTheme();
 
   return (
-    <nav style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 50,
-      background: 'rgba(10, 10, 20, 0.7)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
-    }}>
+    <nav 
+      className="nav"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        background: 'rgba(10, 10, 20, 0.7)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
+      }}
+    >
       <div className="max-width-container section-padding">
         <div style={{
           display: 'flex',
@@ -120,22 +123,32 @@ export default function Navigation() {
                 style={{
                   padding: '0.75rem',
                   borderRadius: '0.75rem',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: theme === "matrix" 
+                    ? 'rgba(0, 255, 0, 0.1)' 
+                    : 'rgba(37, 99, 235, 0.1)',
+                  border: `1px solid ${theme === "matrix" ? '#00ff00' : '#2563eb'}`,
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  color: theme === "matrix" ? '#00ff00' : '#2563eb'
                 }}
                 className="glass-card"
-                aria-label="Toggle theme"
+                aria-label={`Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
+                title={`Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
               >
-                {theme === "light" ? (
-                  <Moon style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
-                ) : (
-                  <Sun style={{ width: '1.25rem', height: '1.25rem', color: '#ffff00' }} />
-                )}
+                <motion.div
+                  initial={false}
+                  animate={{ rotate: theme === "matrix" ? 0 : 180 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {theme === "matrix" ? (
+                    <Briefcase style={{ width: '1.25rem', height: '1.25rem' }} />
+                  ) : (
+                    <Code style={{ width: '1.25rem', height: '1.25rem' }} />
+                  )}
+                </motion.div>
               </motion.button>
             )}
 
