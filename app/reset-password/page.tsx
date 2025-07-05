@@ -32,6 +32,15 @@ function ResetPasswordContent() {
     // Check if we have a token (for password reset)
     const token = searchParams.get('token') || searchParams.get('access_token');
     
+    // Also check in hash parameters (Supabase might send tokens there)
+    let hashToken = null;
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      hashToken = hashParams.get('access_token') || hashParams.get('token');
+    }
+    
+    const finalToken = token || hashToken;
+    
     // Check for errors in URL hash (Supabase redirects with errors in hash)
     if (typeof window !== 'undefined' && window.location.hash) {
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -61,10 +70,10 @@ function ResetPasswordContent() {
       }
     }
     
-    if (token) {
+    if (finalToken) {
       setIsResetting(true);
     }
-  }, [searchParams]);
+  }, [searchParams, theme]);
 
   const handleRequestReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,11 +83,13 @@ function ResetPasswordContent() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
       });
 
       if (error) throw error;
-      setMessage('Password reset email sent! Check your inbox.');
+      setMessage(theme === "professional" 
+        ? 'Password reset email sent! Check your inbox.'
+        : '>>> RESET_EMAIL_SENT: CHECK_INBOX <<<');
     } catch (error: any) {
       setError(error.message);
     } finally {
