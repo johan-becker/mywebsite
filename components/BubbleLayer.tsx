@@ -13,8 +13,6 @@ interface Bubble {
   interactive?: boolean;
   label?: string;
   action?: () => void;
-  velocityX: number;
-  velocityY: number;
 }
 
 interface BubbleLayerProps {
@@ -26,23 +24,31 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [mounted, setMounted] = useState(false);
   const [showBubbles, setShowBubbles] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const { scrollY } = useScroll();
 
   // Smoother spring configs
   const smoothSpringConfig = { damping: 25, stiffness: 50, mass: 0.8 };
   const mouseXSpring = useSpring(mouseX, smoothSpringConfig);
   const mouseYSpring = useSpring(mouseY, smoothSpringConfig);
 
+  // Check for mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Check scroll position to show/hide bubbles
   useEffect(() => {
     const handleScroll = () => {
-      const heroHeight = window.innerHeight; // Hero section is full viewport height
+      const heroHeight = window.innerHeight;
       const scrollPosition = window.scrollY;
-      
-      // Show bubbles when scrolled past 80% of hero section
       setShowBubbles(scrollPosition > heroHeight * 0.8);
     };
 
@@ -55,23 +61,22 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
     
     const generateBubbles = () => {
       const newBubbles: Bubble[] = [];
-      const visibleCount = Math.min(Math.max(count, 10), 20); // Ensure between 10-20 bubbles
+      const visibleCount = isMobile ? 
+        Math.min(Math.max(count, 8), 10) : // 8-10 bubbles for mobile
+        Math.min(Math.max(count, 12), 15); // 12-15 bubbles for desktop
       
-      // Generate random bubbles with better distribution
       for (let i = 0; i < visibleCount; i++) {
         newBubbles.push({
           id: i,
-          x: Math.random() * 90 + 5, // Keep bubbles away from edges
-          y: Math.random() * 70 + 20, // Start from 20% down to avoid hero section
-          size: Math.random() * 80 + 30, // Larger size range
-          delay: Math.random() * 8, // Longer delay range
-          duration: Math.random() * 25 + 20, // Longer duration for smoother movement
+          x: Math.random() * 90 + 5,
+          y: Math.random() * 70 + 20,
+          size: Math.random() * 80 + 30,
+          delay: Math.random() * 8,
+          duration: Math.random() * 25 + 20,
           interactive: interactive && i < 3,
           label: interactive && i === 0 ? "Portfolio" : 
                  interactive && i === 1 ? "Kontakt" : 
                  interactive && i === 2 ? "Mehr erfahren" : undefined,
-          velocityX: (Math.random() - 0.5) * 0.5, // Random horizontal velocity
-          velocityY: (Math.random() - 0.5) * 0.3, // Random vertical velocity
         });
       }
       
@@ -79,11 +84,7 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
     };
 
     generateBubbles();
-
-    // Regenerate bubbles periodically to ensure continuous movement
-    const interval = setInterval(generateBubbles, 30000);
-    return () => clearInterval(interval);
-  }, [count, interactive]);
+  }, [count, interactive, isMobile]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -141,7 +142,6 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
   );
 }
 
-// Separate component for individual bubbles
 function BubbleItem({ 
   bubble, 
   mouseXSpring, 
@@ -155,72 +155,58 @@ function BubbleItem({
   showBubbles: boolean;
   onBubbleClick: (bubble: Bubble) => void;
 }) {
-  const [position, setPosition] = useState({ x: bubble.x, y: bubble.y });
-
-  // Independent movement animation
-  useEffect(() => {
-    if (!showBubbles) return;
-
-    const animate = () => {
-      setPosition(prev => {
-        let newX = prev.x + bubble.velocityX;
-        let newY = prev.y + bubble.velocityY;
-
-        // Bounce off walls
-        if (newX <= 2 || newX >= 98) {
-          bubble.velocityX *= -1;
-          newX = Math.max(2, Math.min(98, newX));
-        }
-        
-        // Constrain vertical movement - don't go above 20% (hero section)
-        if (newY <= 20 || newY >= 95) {
-          bubble.velocityY *= -1;
-          newY = Math.max(20, Math.min(95, newY));
-        }
-
-        return { x: newX, y: newY };
-      });
-    };
-
-    const interval = setInterval(animate, 100);
-    return () => clearInterval(interval);
-  }, [bubble.velocityX, bubble.velocityY, showBubbles]);
-
-  // Subtle mouse parallax effect (reduced intensity)
+  // Pre-calculate motion values
+  const baseX = bubble.x;
+  const baseY = bubble.y;
+  const range = 20; // Movement range in percentage
+  
   const x = useTransform(
     mouseXSpring,
     [0, 1],
-    [position.x - 1, position.x + 1]
+    [baseX - range/2, baseX + range/2]
   );
   
   const y = useTransform(
     mouseYSpring,
     [0, 1],
-    [position.y - 1, position.y + 1]
+    [baseY - range/2, baseY + range/2]
   );
 
   return (
     <motion.div
       className={`bubble ${bubble.interactive ? "bubble-interactive" : ""}`}
       style={{
-        left: `${position.x}%`,
-        top: `${position.y}%`,
+        position: 'absolute',
+        left: 0,
+        top: 0,
         width: bubble.size,
         height: bubble.size,
-        x,
-        y,
-        pointerEvents: bubble.interactive ? 'auto' : 'none'
+        pointerEvents: bubble.interactive ? 'auto' : 'none',
+        opacity: showBubbles ? 1 : 0,
       }}
       animate={{
+        x: `${x.get()}%`,
+        y: `${y.get()}%`,
         scale: [1, 1.08, 1],
         opacity: [0.2, 0.4, 0.2],
       }}
       transition={{
-        duration: bubble.duration,
-        delay: bubble.delay,
-        repeat: Infinity,
-        ease: "easeInOut",
-        repeatType: "reverse",
+        x: { type: "spring", stiffness: 100, damping: 30 },
+        y: { type: "spring", stiffness: 100, damping: 30 },
+        scale: {
+          duration: bubble.duration,
+          delay: bubble.delay,
+          repeat: Infinity,
+          ease: "easeInOut",
+          repeatType: "reverse",
+        },
+        opacity: {
+          duration: bubble.duration * 1.2,
+          delay: bubble.delay,
+          repeat: Infinity,
+          ease: "easeInOut",
+          repeatType: "reverse",
+        }
       }}
       whileHover={bubble.interactive ? { 
         scale: 1.15,
