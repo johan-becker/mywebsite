@@ -31,6 +31,36 @@ function ResetPasswordContent() {
   useEffect(() => {
     // Check if we have a token (for password reset)
     const token = searchParams.get('token') || searchParams.get('access_token');
+    
+    // Check for errors in URL hash (Supabase redirects with errors in hash)
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const error = hashParams.get('error');
+      const errorCode = hashParams.get('error_code');
+      const errorDescription = hashParams.get('error_description');
+      
+      if (error && errorCode) {
+        if (errorCode === 'otp_expired') {
+          setError(theme === "professional" 
+            ? 'Der Reset-Link ist abgelaufen. Bitte fordern Sie einen neuen Link an.'
+            : '>>> RESET_LINK_EXPIRED: REQUEST_NEW_LINK <<<');
+        } else if (errorCode === 'access_denied') {
+          setError(theme === "professional" 
+            ? 'Der Reset-Link ist ungültig oder wurde bereits verwendet. Bitte fordern Sie einen neuen Link an.'
+            : '>>> INVALID_RESET_LINK: ACCESS_DENIED <<<');
+        } else {
+          setError(theme === "professional" 
+            ? (errorDescription || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
+            : '>>> RESET_ERROR: TRY_AGAIN <<<');
+        }
+        
+        // Clear the hash from URL
+        window.history.replaceState(null, '', window.location.pathname);
+        setIsResetting(false);
+        return;
+      }
+    }
+    
     if (token) {
       setIsResetting(true);
     }
