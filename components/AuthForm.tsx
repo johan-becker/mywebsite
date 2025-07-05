@@ -74,7 +74,12 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
         });
 
         if (error) throw error;
-        setMessage('Check your email for the confirmation link!');
+        setMessage('Registration successful! Redirecting to login...');
+        
+        // Redirect to login page after successful signup
+        setTimeout(() => {
+          router.push('/login');
+        }, 1500);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -580,45 +585,6 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
             </motion.button>
           </motion.div>
         </form>
-
-        <motion.div
-          variants={itemVariants}
-          className="mt-6 text-center"
-        >
-          <p style={{
-            fontSize: '0.875rem',
-            fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-            color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
-            opacity: 0.8
-          }}>
-            {mode === 'login' 
-              ? (theme === "professional" ? "Noch kein Konto?" : ">>> NO ACCOUNT?")
-              : (theme === "professional" ? "Bereits ein Konto?" : ">>> ALREADY REGISTERED?")
-            }
-          </p>
-          <motion.button
-            type="button"
-            onClick={onToggleMode}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: theme === "professional" ? 'var(--primary-color)' : '#00ff00',
-              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-              marginTop: '0.5rem'
-            }}
-          >
-            {mode === 'login' 
-              ? (theme === "professional" ? "Hier registrieren" : "[CREATE_NEW_ACCOUNT]")
-              : (theme === "professional" ? "Hier anmelden" : "[ACCESS_EXISTING_ACCOUNT]")
-            }
-          </motion.button>
-        </motion.div>
       </motion.div>
     </motion.div>
   );
