@@ -7,22 +7,22 @@ const skills = [
   {
     name: "Frontend",
     items: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    color: "#00ff00"
+    color: "#ff0040"  // Rot-Pink (oben)
   },
   {
     name: "Backend", 
     items: ["Node.js", "Python", "PostgreSQL", "Redis"],
-    color: "#00ffff"
+    color: "#ff8000"  // Orange
   },
   {
     name: "DevOps",
     items: ["Docker", "AWS", "CI/CD", "Kubernetes"],
-    color: "#ff00ff"
+    color: "#00ff80"  // Grün
   },
   {
     name: "Tools",
     items: ["Git", "VS Code", "Figma", "Linux"],
-    color: "#ffff00"
+    color: "#0080ff"  // Blau (unten)
   }
 ];
 
@@ -58,18 +58,47 @@ export default function SkillsGrid() {
       initial="hidden"
       animate="visible"
       className="mb-20"
+      style={{
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
+      {/* Animated color flow background - only in matrix theme */}
+      {theme === "matrix" && (
+        <motion.div
+          initial={{ y: '-100%' }}
+          animate={{ y: '100%' }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          style={{
+            position: 'absolute',
+            top: '-50%',
+            left: 0,
+            right: 0,
+            height: '200%',
+            background: 'linear-gradient(180deg, #ff004020, #ff800020, #00ff8020, #0080ff20, transparent)',
+            pointerEvents: 'none',
+            zIndex: 0
+          }}
+        />
+      )}
       <h2 style={{
         fontSize: '2rem',
         fontWeight: 700,
         marginBottom: '2rem',
         fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-        color: theme === "professional" ? 'var(--primary-color)' : '#ffff00'
+        color: theme === "professional" ? 'var(--primary-color)' : '#ffffff',
+        textShadow: theme === "professional" ? 'none' : '0 0 20px #ffffff, 0 0 40px #ffffff80',
+        position: 'relative',
+        zIndex: 1
       }} className="neon-text">
         {theme === "professional" ? "Technologien" : "SKILL MATRIX"}
       </h2>
       
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" style={{ position: 'relative', zIndex: 1 }}>
         {skills.map((category, index) => (
           <motion.div
             key={index}
