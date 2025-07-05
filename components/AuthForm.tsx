@@ -69,7 +69,8 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
           options: {
             data: {
               full_name: fullName,
-            }
+            },
+            emailRedirectTo: `${window.location.origin}/auth/callback?type=signup`
           }
         });
 
