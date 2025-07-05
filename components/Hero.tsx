@@ -217,6 +217,20 @@ export default function Hero() {
           {/* Matrix Status Display */}
           <motion.div
             variants={textVariants}
+            initial={{
+              opacity: 0,
+              y: 30,
+              scale: 0.95
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scale: 1
+            }}
+            transition={{
+              duration: 0.8,
+              ease: "easeOut"
+            }}
             className="glass-card"
             style={{
               maxWidth: '40rem',
@@ -243,7 +257,8 @@ export default function Hero() {
               transition={{
                 duration: 5,
                 repeat: Infinity,
-                ease: "linear"
+                ease: "linear",
+                delay: 1 // Start after entrance animation
               }}
             />
             
@@ -290,17 +305,12 @@ export default function Hero() {
                     animate={{ 
                       opacity: 1,
                       y: 0,
-                      scale: 1,
-                      boxShadow: ['0 0 5px #00ff00', '0 0 20px #00ff00', '0 0 5px #00ff00']
+                      scale: 1
                     }}
                     transition={{
                       duration: 0.5,
-                      delay: i * 0.3,
-                      boxShadow: {
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.3
-                      }
+                      delay: 0.5 + i * 0.2, // Delay after parent entrance
+                      ease: "easeOut"
                     }}
                     style={{
                       display: 'flex',
@@ -317,6 +327,28 @@ export default function Hero() {
                   >
                     <item.icon style={{ width: '1rem', height: '1rem' }} />
                     <span>{item.label}: {item.status}</span>
+                    
+                    {/* Separate loop animation for box-shadow */}
+                    <motion.div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        borderRadius: '20px',
+                        pointerEvents: 'none'
+                      }}
+                      animate={{
+                        boxShadow: [
+                          '0 0 5px #00ff00', 
+                          '0 0 20px #00ff00', 
+                          '0 0 5px #00ff00'
+                        ]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        delay: 1.5 + i * 0.3 // Start after entrance animations complete
+                      }}
+                    />
                   </motion.div>
                 ))}
               </div>
