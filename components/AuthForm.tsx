@@ -74,12 +74,7 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
         });
 
         if (error) throw error;
-        setMessage('Registration successful! Redirecting to login...');
-        
-        // Redirect to login page after successful signup
-        setTimeout(() => {
-          router.push('/login');
-        }, 1500);
+        setMessage('Registration successful! Please check your email and click the confirmation link to activate your account.');
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
