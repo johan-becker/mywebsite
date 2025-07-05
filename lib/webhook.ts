@@ -16,7 +16,7 @@ interface WebhookResponse {
  * @returns Promise with success status and optional message
  */
 export async function sendToN8nWebhook(data: WebhookData): Promise<WebhookResponse> {
-  const webhookUrl = 'https://formypage88.app.n8n.cloud/webhook-test/transmission';
+  const webhookUrl = 'https://formypage88.app.n8n.cloud/webhook/transmission';
   
   try {
     console.log('🚀 Sending data to n8n webhook:', {
