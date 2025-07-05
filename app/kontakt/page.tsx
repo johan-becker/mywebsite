@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Github, Mail, MapPin, Phone } from "lucide-react";
-import BubbleLayer from "@/components/BubbleLayer";
 import ProfessionalBackground from "@/components/ProfessionalBackground";
 import { useTheme } from "@/components/ThemeProvider";
 
@@ -38,7 +37,6 @@ export default function Kontakt() {
 
   return (
     <>
-      {theme === "matrix" && <BubbleLayer count={12} />}
       {theme === "professional" && <ProfessionalBackground variant="minimal" />}
       <div className="min-h-screen relative overflow-hidden" style={{ 
         marginTop: "5rem",

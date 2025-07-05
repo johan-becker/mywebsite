@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Calendar } from "lucide-react";
-import BubbleLayer from "@/components/BubbleLayer";
 import ProfessionalBackground from "@/components/ProfessionalBackground";
 import { useTheme } from "@/components/ThemeProvider";
 
@@ -16,7 +15,6 @@ export default function Portfolio() {
 
   return (
     <>
-      {theme === "matrix" && <BubbleLayer count={10} />}
       {theme === "professional" && <ProfessionalBackground variant="geometric" />}
       <div className="min-h-screen" style={{ marginTop: "5rem" }}>
         <div className="max-width-container section-padding py-8">
