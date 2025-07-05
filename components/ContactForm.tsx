@@ -2,10 +2,77 @@
 
 import { motion } from "framer-motion";
 import { Send, Mail, User, MessageSquare } from "lucide-react";
+import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
+import StatusMessage from "./StatusMessage";
+
+interface FormData {
+  name: string;
+  email: string;
+  message: string;
+}
 
 export default function ContactForm() {
   const { theme } = useTheme();
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // Send to API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Fehler beim Senden der Nachricht');
+      }
+
+      // Show success message
+      console.log('✅ Form submission successful:', result);
+      setStatusMessage(`${result.message} (ID: ${result.submissionId})`);
+      setSubmitStatus('success');
+      
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        email: '',
+        message: ''
+      });
+      
+    } catch (error) {
+      console.error('❌ Error submitting form:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler';
+      setStatusMessage(errorMessage);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const formVariants = {
     hidden: { opacity: 0, y: 30 },
@@ -32,7 +99,18 @@ export default function ContactForm() {
   };
 
   return (
-    <motion.section
+    <>
+      {/* Status Message */}
+      <StatusMessage 
+        status={submitStatus === 'idle' ? null : submitStatus}
+        message={statusMessage}
+        onClose={() => {
+          setSubmitStatus('idle');
+          setStatusMessage('');
+        }}
+      />
+      
+      <motion.section
       variants={formVariants}
       initial="hidden"
       animate="visible"
@@ -87,7 +165,7 @@ export default function ContactForm() {
           {theme === "professional" ? "Nachricht senden" : "SEND TRANSMISSION"}
         </h2>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <motion.div
             variants={fieldVariants}
             initial="hidden"
@@ -108,6 +186,10 @@ export default function ContactForm() {
             </label>
             <input
               type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              required
               placeholder={theme === "professional" ? "Ihr Name..." : "Enter your identity..."}
               style={{
                 width: '100%',
@@ -149,6 +231,10 @@ export default function ContactForm() {
             </label>
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              required
               placeholder={theme === "professional" ? "ihre@email.de" : "your@transmission.net"}
               style={{
                 width: '100%',
@@ -189,6 +275,10 @@ export default function ContactForm() {
               {theme === "professional" ? "Nachricht" : "MESSAGE_CONTENT"}
             </label>
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleInputChange}
+              required
               rows={6}
               placeholder={theme === "professional" 
                 ? "Beschreiben Sie Ihr Projekt oder Ihre Anfrage..."
@@ -222,14 +312,17 @@ export default function ContactForm() {
           >
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              disabled={isSubmitting}
+              whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+              whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               style={{
                 width: '100%',
                 padding: '1rem 2rem',
-                background: theme === "professional"
-                  ? 'var(--primary-color)'
-                  : 'linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.4))',
+                background: isSubmitting 
+                  ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 255, 0.1)')
+                  : (theme === "professional"
+                    ? 'var(--primary-color)'
+                    : 'linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.4))'),
                 border: theme === "professional"
                   ? 'none'
                   : '2px solid rgba(0, 255, 255, 0.7)',
@@ -239,22 +332,43 @@ export default function ContactForm() {
                 fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
                 fontSize: '1rem',
                 letterSpacing: theme === "professional" ? 'normal' : '0.1em',
-                cursor: 'pointer',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '0.5rem',
-                textTransform: theme === "professional" ? 'none' : 'uppercase'
+                textTransform: theme === "professional" ? 'none' : 'uppercase',
+                opacity: isSubmitting ? 0.7 : 1
               }}
               className={theme === "matrix" ? "cyber-button" : ""}
             >
-              <Send className="w-5 h-5" />
-              {theme === "professional" ? "Nachricht senden" : "TRANSMIT MESSAGE"}
+              {isSubmitting ? (
+                <>
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      border: '2px solid transparent',
+                      borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ffff'}`,
+                      borderRadius: '50%'
+                    }}
+                  />
+                  {theme === "professional" ? "Wird gesendet..." : "TRANSMITTING..."}
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  {theme === "professional" ? "Nachricht senden" : "TRANSMIT MESSAGE"}
+                </>
+              )}
             </motion.button>
           </motion.div>
         </form>
       </div>
     </motion.section>
+    </>
   );
 } 
