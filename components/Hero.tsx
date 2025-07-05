@@ -27,7 +27,7 @@ export default function Hero() {
           ? 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)'
           : 'linear-gradient(180deg, var(--background-primary) 0%, var(--background-secondary) 50%, var(--background-primary) 100%)'
       }}
-    >
+        >
       {/* Matrix Background Effects */}
       <MatrixBackground />
 

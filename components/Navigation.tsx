@@ -8,9 +8,9 @@ import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
-  { href: "/", label: "HOME", icon: "01" },
-  { href: "/portfolio", label: "PORTFOLIO", icon: "02" },
-  { href: "/kontakt", label: "CONTACT", icon: "03" },
+  { href: "/", label: "HOME", professionalLabel: "Home", icon: "01" },
+  { href: "/portfolio", label: "PORTFOLIO", professionalLabel: "Portfolio", icon: "02" },
+  { href: "/kontakt", label: "CONTACT", professionalLabel: "Kontakt", icon: "03" },
 ];
 
 export default function Navigation() {
@@ -27,9 +27,16 @@ export default function Navigation() {
         left: 0,
         right: 0,
         zIndex: 50,
-        background: 'rgba(10, 10, 20, 0.7)',
+        background: theme === "professional" 
+          ? 'rgba(255, 255, 255, 0.95)' 
+          : 'rgba(10, 10, 20, 0.7)',
         backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
+        borderBottom: theme === "professional" 
+          ? '1px solid rgba(0, 0, 0, 0.1)' 
+          : '1px solid rgba(0, 255, 255, 0.2)',
+        boxShadow: theme === "professional" 
+          ? '0 1px 3px rgba(0, 0, 0, 0.1)' 
+          : 'none',
       }}
     >
       <div className="max-width-container section-padding">
@@ -39,25 +46,29 @@ export default function Navigation() {
           justifyContent: 'space-between',
           height: '5rem'
         }}>
-          {/* Logo with glitch effect */}
+          {/* Logo */}
           <Link
             href="/"
             style={{
               fontSize: '1.5rem',
               fontWeight: 900,
-              fontFamily: 'Orbitron, monospace',
-              color: '#00ffff',
+              fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+              color: theme === "professional" ? 'var(--primary-color)' : '#00ffff',
               textDecoration: 'none',
-              letterSpacing: '0.1em',
+              letterSpacing: theme === "professional" ? 'normal' : '0.1em',
               position: 'relative',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem'
             }}
-            className="neon-text"
+            className={theme === "matrix" ? "neon-text" : ""}
           >
-            <Terminal style={{ width: '1.5rem', height: '1.5rem' }} />
-            JB
+            {theme === "professional" ? (
+              <Briefcase style={{ width: '1.5rem', height: '1.5rem' }} />
+            ) : (
+              <Terminal style={{ width: '1.5rem', height: '1.5rem' }} />
+            )}
+            {theme === "professional" ? "Johan Becker" : "JB"}
           </Link>
 
           {/* Desktop Navigation */}
@@ -72,40 +83,52 @@ export default function Navigation() {
                 href={item.href}
                 style={{
                   position: 'relative',
-                  fontFamily: 'Space Grotesk, sans-serif',
-                  fontWeight: 600,
-                  fontSize: '0.875rem',
-                  letterSpacing: '0.1em',
+                  fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Space Grotesk, sans-serif',
+                  fontWeight: theme === "professional" ? 500 : 600,
+                  fontSize: theme === "professional" ? '0.95rem' : '0.875rem',
+                  letterSpacing: theme === "professional" ? 'normal' : '0.1em',
                   color: pathname === item.href 
-                    ? '#00ffff' 
-                    : 'rgba(255, 255, 255, 0.7)',
+                    ? (theme === "professional" ? 'var(--primary-color)' : '#00ffff')
+                    : (theme === "professional" ? 'var(--text-secondary)' : 'rgba(255, 255, 255, 0.7)'),
                   textDecoration: 'none',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem'
+                  gap: theme === "professional" ? '0.25rem' : '0.5rem',
+                  padding: theme === "professional" ? '0.5rem 1rem' : '0',
+                  borderRadius: theme === "professional" ? '8px' : '0',
+                  background: pathname === item.href && theme === "professional" 
+                    ? 'var(--background-secondary)' 
+                    : 'transparent'
                 }}
-                className={pathname === item.href ? "neon-text" : ""}
+                className={pathname === item.href && theme === "matrix" ? "neon-text" : ""}
               >
-                <span style={{
-                  fontSize: '0.75rem',
-                  opacity: 0.5,
-                  fontFamily: 'Orbitron, monospace'
-                }}>
-                  {item.icon}
-                </span>
-                {item.label}
+                {theme === "matrix" && (
+                  <span style={{
+                    fontSize: '0.75rem',
+                    opacity: 0.5,
+                    fontFamily: 'Orbitron, monospace'
+                  }}>
+                    {item.icon}
+                  </span>
+                )}
+                {theme === "professional" ? item.professionalLabel : item.label}
                 {pathname === item.href && (
                   <motion.div
                     layoutId="navbar-indicator"
                     style={{
                       position: 'absolute',
-                      bottom: '-26px',
+                      bottom: theme === "professional" ? '-2px' : '-26px',
                       left: 0,
                       right: 0,
                       height: '2px',
-                      background: 'linear-gradient(90deg, transparent, #00ffff, transparent)',
-                      boxShadow: '0 0 10px #00ffff'
+                      background: theme === "professional" 
+                        ? 'var(--primary-color)' 
+                        : 'linear-gradient(90deg, transparent, #00ffff, transparent)',
+                      boxShadow: theme === "professional" 
+                        ? 'none' 
+                        : '0 0 10px #00ffff',
+                      borderRadius: theme === "professional" ? '1px' : '0'
                     }}
                   />
                 )}
@@ -160,8 +183,12 @@ export default function Navigation() {
                 display: 'block',
                 padding: '0.75rem',
                 borderRadius: '0.75rem',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                background: theme === "professional" 
+                  ? 'rgba(37, 99, 235, 0.1)' 
+                  : 'rgba(255, 255, 255, 0.05)',
+                border: theme === "professional" 
+                  ? '1px solid rgba(37, 99, 235, 0.2)' 
+                  : '1px solid rgba(255, 255, 255, 0.1)',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
               }}
@@ -169,9 +196,17 @@ export default function Navigation() {
               aria-label="Toggle menu"
             >
               {isOpen ? (
-                <X style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
+                <X style={{ 
+                  width: '1.25rem', 
+                  height: '1.25rem', 
+                  color: theme === "professional" ? '#2563eb' : '#00ffff' 
+                }} />
               ) : (
-                <Menu style={{ width: '1.25rem', height: '1.25rem', color: '#00ffff' }} />
+                <Menu style={{ 
+                  width: '1.25rem', 
+                  height: '1.25rem', 
+                  color: theme === "professional" ? '#2563eb' : '#00ffff' 
+                }} />
               )}
             </motion.button>
           </div>
@@ -187,8 +222,12 @@ export default function Navigation() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             style={{
-              background: 'rgba(10, 10, 20, 0.95)',
-              borderBottom: '1px solid rgba(0, 255, 255, 0.2)',
+              background: theme === "professional" 
+                ? 'rgba(255, 255, 255, 0.95)' 
+                : 'rgba(10, 10, 20, 0.95)',
+              borderBottom: theme === "professional" 
+                ? '1px solid rgba(0, 0, 0, 0.1)' 
+                : '1px solid rgba(0, 255, 255, 0.2)',
               backdropFilter: 'blur(20px)'
             }}
             className="md:hidden"
@@ -212,31 +251,33 @@ export default function Navigation() {
                       marginBottom: '0.5rem',
                       borderRadius: '0.75rem',
                       background: pathname === item.href 
-                        ? 'rgba(0, 255, 255, 0.1)' 
+                        ? (theme === "professional" ? 'var(--background-secondary)' : 'rgba(0, 255, 255, 0.1)')
                         : 'transparent',
                       border: '1px solid',
                       borderColor: pathname === item.href 
-                        ? 'rgba(0, 255, 255, 0.3)' 
+                        ? (theme === "professional" ? 'var(--primary-color)' : 'rgba(0, 255, 255, 0.3)')
                         : 'transparent',
                       color: pathname === item.href 
-                        ? '#00ffff' 
-                        : 'rgba(255, 255, 255, 0.7)',
+                        ? (theme === "professional" ? 'var(--primary-color)' : '#00ffff')
+                        : (theme === "professional" ? 'var(--text-secondary)' : 'rgba(255, 255, 255, 0.7)'),
                       textDecoration: 'none',
                       transition: 'all 0.3s ease',
-                      fontFamily: 'Space Grotesk, sans-serif',
-                      fontWeight: 600,
+                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Space Grotesk, sans-serif',
+                      fontWeight: theme === "professional" ? 500 : 600,
                       fontSize: '0.875rem',
-                      letterSpacing: '0.1em'
+                      letterSpacing: theme === "professional" ? 'normal' : '0.1em'
                     }}
                   >
-                    <span style={{
-                      fontSize: '0.75rem',
-                      opacity: 0.5,
-                      fontFamily: 'Orbitron, monospace'
-                    }}>
-                      {item.icon}
-                    </span>
-                    {item.label}
+                    {theme === "matrix" && (
+                      <span style={{
+                        fontSize: '0.75rem',
+                        opacity: 0.5,
+                        fontFamily: 'Orbitron, monospace'
+                      }}>
+                        {item.icon}
+                      </span>
+                    )}
+                    {theme === "professional" ? item.professionalLabel : item.label}
                   </Link>
                 </motion.div>
               ))}

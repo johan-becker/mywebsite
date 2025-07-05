@@ -125,7 +125,7 @@ export default function Portfolio() {
                       fontWeight: 700,
                       color: theme === "professional" ? 'var(--primary-color)' : '#ff00ff',
                       fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace'
-                    }}>
+                      }}>
                       {item.year}
                       </span>
                     <div style={{
