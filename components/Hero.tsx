@@ -16,12 +16,12 @@ export default function Hero() {
     <section 
       className={theme === "professional" ? "hero-section" : ""}
       style={{
-        position: 'relative',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: '4rem',
+      position: 'relative',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingTop: '4rem',
         overflow: 'hidden',
         background: theme === "professional" 
           ? 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)'
@@ -33,7 +33,7 @@ export default function Hero() {
 
       {/* Main Content Container */}
       <div className="max-width-container section-padding" style={{ 
-        position: 'relative', 
+              position: 'relative',
         zIndex: 10,
         width: '100%',
         textAlign: 'center'

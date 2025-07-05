@@ -46,11 +46,11 @@ export default function Kontakt() {
       }}>
         {/* Matrix Background Effects - only in matrix theme */}
         {theme === "matrix" && (
-          <div className="absolute inset-0 z-0">
-            <motion.div
-              initial={{ opacity: 0 }}
+        <div className="absolute inset-0 z-0">
+          <motion.div
+            initial={{ opacity: 0 }}
               animate={{ opacity: 0.4 }}
-              transition={{ duration: 2 }}
+            transition={{ duration: 2 }}
               style={{
                 position: 'absolute',
                 top: '20%',
@@ -61,11 +61,11 @@ export default function Kontakt() {
                 borderRadius: '50%',
                 filter: 'blur(60px)'
               }}
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
+          />
+          <motion.div
+            initial={{ opacity: 0 }}
               animate={{ opacity: 0.3 }}
-              transition={{ duration: 2, delay: 0.5 }}
+            transition={{ duration: 2, delay: 0.5 }}
               style={{
                 position: 'absolute',
                 bottom: '20%',
@@ -76,8 +76,8 @@ export default function Kontakt() {
                 borderRadius: '50%',
                 filter: 'blur(80px)'
               }}
-            />
-          </div>
+          />
+        </div>
         )}
 
         <div className="max-width-container section-padding relative z-10">
@@ -138,7 +138,7 @@ export default function Kontakt() {
                   : ">>> INITIATING_SECURE_CONNECTION..."
                 }
               </motion.p>
-            </motion.div>
+          </motion.div>
 
             <div className="max-w-4xl mx-auto grid gap-8 lg:grid-cols-2">
               {/* Contact Information */}
@@ -147,7 +147,7 @@ export default function Kontakt() {
                 className="space-y-6"
               >
                 {/* Email */}
-                <motion.div
+            <motion.div
                   className="glass-card"
                   style={{
                     padding: '2rem',
@@ -163,8 +163,8 @@ export default function Kontakt() {
                       : 'polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px))'
                   }}
                 >
-                  <a
-                    href="mailto:contact@johanbecker.de"
+              <a
+                href="mailto:contact@johanbecker.de"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -204,15 +204,15 @@ export default function Kontakt() {
                         color: theme === "professional" ? 'var(--text-primary)' : '#00ff00'
                       }}>
                         {theme === "professional" ? "E-Mail" : "[EMAIL_CHANNEL]"}
-                      </h2>
+                  </h2>
                       <p style={{
                         fontSize: '1.1rem',
                         fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
                         color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00'
                       }}>
-                        contact@johanbecker.de
-                      </p>
-                    </div>
+                    contact@johanbecker.de
+                  </p>
+                </div>
                   </a>
                 </motion.div>
 
@@ -235,8 +235,8 @@ export default function Kontakt() {
                 >
                   <a
                     href="https://github.com/johanbecker"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                target="_blank"
+                rel="noopener noreferrer"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -276,23 +276,23 @@ export default function Kontakt() {
                         color: theme === "professional" ? 'var(--text-primary)' : '#00ffff'
                       }}>
                         {theme === "professional" ? "GitHub" : "[CODE_REPOSITORY]"}
-                      </h2>
+                  </h2>
                       <p style={{
                         fontSize: '1.1rem',
                         fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
                         color: theme === "professional" ? 'var(--text-secondary)' : '#00ffff'
                       }}>
                         github.com/johanbecker
-                      </p>
-                    </div>
+                  </p>
+                </div>
                   </a>
                 </motion.div>
-              </motion.div>
+            </motion.div>
 
               {/* Contact Form */}
               <ContactForm />
-            </div>
-          </motion.div>
+              </div>
+            </motion.div>
         </div>
       </div>
     </>

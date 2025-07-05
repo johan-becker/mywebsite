@@ -127,7 +127,7 @@ export default function Portfolio() {
                       fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace'
                     }}>
                       {item.year}
-                    </span>
+                      </span>
                     <div style={{
                       flex: 1,
                       height: '2px',
@@ -136,23 +136,23 @@ export default function Portfolio() {
                         : 'linear-gradient(90deg, #ff00ff, transparent)'
                     }} />
                   </div>
-                  <h3 style={{
-                    fontSize: '1.25rem',
+                      <h3 style={{
+                        fontSize: '1.25rem',
                     fontWeight: 600,
                     marginBottom: '0.5rem',
                     fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
                     color: theme === "professional" ? 'var(--text-primary)' : undefined
-                  }}>
-                    {item.title}
-                  </h3>
-                  <p style={{
-                    opacity: 0.8,
+                      }}>
+                        {item.title}
+                      </h3>
+                      <p style={{
+                        opacity: 0.8,
                     lineHeight: 1.6,
                     fontFamily: theme === "professional" ? 'var(--font-secondary)' : undefined,
                     color: theme === "professional" ? 'var(--text-secondary)' : undefined
-                  }}>
-                    {item.description}
-                  </p>
+                      }}>
+                        {item.description}
+                      </p>
                 </motion.div>
               ))}
             </div>

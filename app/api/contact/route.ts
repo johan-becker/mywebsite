@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendToN8nWebhook } from '@/lib/webhook';
 
 interface ContactFormData {
   name: string;
@@ -39,14 +40,24 @@ export async function POST(request: NextRequest) {
 
     console.log('📧 New Contact Form Submission:', submission);
 
-    // Here you would typically:
+    // Send data to n8n webhook
+    const webhookResult = await sendToN8nWebhook({
+      identity: body.name,
+      communication_channel: body.email,
+      message_content: body.message
+    });
+
+    if (!webhookResult.success) {
+      console.warn('⚠️ Webhook sending failed, but continuing with form submission:', webhookResult.error);
+      // Note: We don't fail the entire request if webhook fails
+      // The form submission is still considered successful
+    }
+
+    // Here you would typically also:
     // 1. Save to database
     // 2. Send email notification
     // 3. Add to CRM system
     // 4. Send auto-reply email
-
-    // For now, we'll just simulate a successful response
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
 
     return NextResponse.json({
       success: true,
