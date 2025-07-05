@@ -5,11 +5,16 @@ import Navigation from "@/components/Navigation";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://johanbecker.de'),
   title: "Johan Becker - Portfolio",
   description: "Ich interessiere mich für Softwareentwicklung, digitale Systeme und technische Automatisierung.",
   keywords: ["Johan Becker", "Portfolio", "Softwareentwicklung", "Web Development", "Next.js", "React"],
   authors: [{ name: "Johan Becker" }],
   creator: "Johan Becker",
+  icons: {
+    icon: '/favicon.svg',
+  },
+  manifest: '/manifest.json',
   openGraph: {
     type: "website",
     locale: "de_DE",
