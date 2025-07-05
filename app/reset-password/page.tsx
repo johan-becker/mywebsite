@@ -11,6 +11,9 @@ import Link from 'next/link';
 import ProfessionalBackground from '@/components/ProfessionalBackground';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
+// Force dynamic rendering to avoid build-time environment variable issues
+export const dynamic = 'force-dynamic';
+
 function ResetPasswordContent() {
   const { theme } = useTheme();
   const router = useRouter();
