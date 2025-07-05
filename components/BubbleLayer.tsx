@@ -13,6 +13,8 @@ interface Bubble {
   interactive?: boolean;
   label?: string;
   action?: () => void;
+  velocityX: number;
+  velocityY: number;
 }
 
 interface BubbleLayerProps {
@@ -23,15 +25,30 @@ interface BubbleLayerProps {
 export default function BubbleLayer({ count = 15, interactive = false }: BubbleLayerProps) {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [showBubbles, setShowBubbles] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const { scrollYProgress } = useScroll();
+  const { scrollY } = useScroll();
 
   // Smoother spring configs
   const smoothSpringConfig = { damping: 25, stiffness: 50, mass: 0.8 };
   const mouseXSpring = useSpring(mouseX, smoothSpringConfig);
   const mouseYSpring = useSpring(mouseY, smoothSpringConfig);
+
+  // Check scroll position to show/hide bubbles
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroHeight = window.innerHeight; // Hero section is full viewport height
+      const scrollPosition = window.scrollY;
+      
+      // Show bubbles when scrolled past 80% of hero section
+      setShowBubbles(scrollPosition > heroHeight * 0.8);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -45,7 +62,7 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
         newBubbles.push({
           id: i,
           x: Math.random() * 90 + 5, // Keep bubbles away from edges
-          y: Math.random() * 90 + 5,
+          y: Math.random() * 70 + 20, // Start from 20% down to avoid hero section
           size: Math.random() * 80 + 30, // Larger size range
           delay: Math.random() * 8, // Longer delay range
           duration: Math.random() * 25 + 20, // Longer duration for smoother movement
@@ -53,6 +70,8 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
           label: interactive && i === 0 ? "Portfolio" : 
                  interactive && i === 1 ? "Kontakt" : 
                  interactive && i === 2 ? "Mehr erfahren" : undefined,
+          velocityX: (Math.random() - 0.5) * 0.5, // Random horizontal velocity
+          velocityY: (Math.random() - 0.5) * 0.3, // Random vertical velocity
         });
       }
       
@@ -97,16 +116,18 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
         bottom: 0,
         overflow: 'hidden',
         pointerEvents: 'none',
-        zIndex: 0
+        zIndex: 0,
+        opacity: showBubbles ? 1 : 0,
+        transition: 'opacity 0.8s ease-in-out'
       }}
     >
       {bubbles.map(bubble => (
         <BubbleItem
           key={bubble.id}
           bubble={bubble}
-          scrollYProgress={scrollYProgress}
           mouseXSpring={mouseXSpring}
           mouseYSpring={mouseYSpring}
+          showBubbles={showBubbles}
           onBubbleClick={(bubble) => {
             if (bubble.label === "Portfolio") {
               window.location.href = "/portfolio";
@@ -123,42 +144,67 @@ export default function BubbleLayer({ count = 15, interactive = false }: BubbleL
 // Separate component for individual bubbles
 function BubbleItem({ 
   bubble, 
-  scrollYProgress, 
   mouseXSpring, 
   mouseYSpring, 
+  showBubbles,
   onBubbleClick 
 }: {
   bubble: Bubble;
-  scrollYProgress: any;
   mouseXSpring: any;
   mouseYSpring: any;
+  showBubbles: boolean;
   onBubbleClick: (bubble: Bubble) => void;
 }) {
-  // Smoother parallax effect
-  const parallaxY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, bubble.size * 1.5]
-  );
+  const [position, setPosition] = useState({ x: bubble.x, y: bubble.y });
 
-  // Smoother mouse parallax effect with reduced intensity
+  // Independent movement animation
+  useEffect(() => {
+    if (!showBubbles) return;
+
+    const animate = () => {
+      setPosition(prev => {
+        let newX = prev.x + bubble.velocityX;
+        let newY = prev.y + bubble.velocityY;
+
+        // Bounce off walls
+        if (newX <= 2 || newX >= 98) {
+          bubble.velocityX *= -1;
+          newX = Math.max(2, Math.min(98, newX));
+        }
+        
+        // Constrain vertical movement - don't go above 20% (hero section)
+        if (newY <= 20 || newY >= 95) {
+          bubble.velocityY *= -1;
+          newY = Math.max(20, Math.min(95, newY));
+        }
+
+        return { x: newX, y: newY };
+      });
+    };
+
+    const interval = setInterval(animate, 100);
+    return () => clearInterval(interval);
+  }, [bubble.velocityX, bubble.velocityY, showBubbles]);
+
+  // Subtle mouse parallax effect (reduced intensity)
   const x = useTransform(
     mouseXSpring,
     [0, 1],
-    [bubble.x - 3, bubble.x + 3]
+    [position.x - 1, position.x + 1]
   );
   
   const y = useTransform(
-    [mouseYSpring, parallaxY],
-    ([mouseY, scrollY]) => bubble.y + (mouseY as number - 0.5) * 8 + (scrollY as number)
+    mouseYSpring,
+    [0, 1],
+    [position.y - 1, position.y + 1]
   );
 
   return (
     <motion.div
       className={`bubble ${bubble.interactive ? "bubble-interactive" : ""}`}
       style={{
-        left: `${bubble.x}%`,
-        top: `${bubble.y}%`,
+        left: `${position.x}%`,
+        top: `${position.y}%`,
         width: bubble.size,
         height: bubble.size,
         x,
