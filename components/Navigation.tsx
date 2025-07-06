@@ -16,7 +16,7 @@ const navItems = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const { theme, toggleTheme, mounted } = useTheme();
+  const { theme, toggleTheme, mounted, isThemeLocked } = useTheme();
 
   return (
     <nav 
@@ -141,8 +141,8 @@ export default function Navigation() {
             {mounted && (
               <motion.button
                 onClick={toggleTheme}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: isThemeLocked ? 1 : 1.1 }}
+                whileTap={{ scale: isThemeLocked ? 1 : 0.9 }}
                 style={{
                   padding: '0.75rem',
                   borderRadius: '0.75rem',
@@ -150,16 +150,17 @@ export default function Navigation() {
                     ? 'rgba(0, 255, 0, 0.1)' 
                     : 'rgba(37, 99, 235, 0.1)',
                   border: `1px solid ${theme === "matrix" ? '#00ff00' : '#2563eb'}`,
-                  cursor: 'pointer',
+                  cursor: isThemeLocked ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: theme === "matrix" ? '#00ff00' : '#2563eb'
+                  color: theme === "matrix" ? '#00ff00' : '#2563eb',
+                  opacity: isThemeLocked ? 0.5 : 1
                 }}
                 className="glass-card"
-                aria-label={`Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
-                title={`Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
+                aria-label={isThemeLocked ? "Theme switching locked" : `Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
+                title={isThemeLocked ? "Theme switching locked in this area" : `Switch to ${theme === "matrix" ? "Professional" : "Matrix"} theme`}
               >
                 <motion.div
                   initial={false}
