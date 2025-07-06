@@ -7,26 +7,51 @@ import AuthForm from '@/components/AuthForm';
 import ProfessionalBackground from '@/components/ProfessionalBackground';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { supabase } from '@/lib/supabase';
 
 // Force dynamic rendering to avoid build-time environment variable issues
 export const dynamic = 'force-dynamic';
 
 function LoginContent() {
   const { theme } = useTheme();
-  const searchParams = useSearchParams();
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user came from email confirmation
-    if (searchParams.get('confirmed') === 'true') {
-      setShowConfirmation(true);
-      // Hide confirmation message after 5 seconds
-      setTimeout(() => setShowConfirmation(false), 5000);
-    }
-  }, [searchParams]);
+    const checkSession = async () => {
+      try {
+        // Check if we have an active session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) throw error;
+
+        if (session) {
+          // If we have a session, redirect to coolperson page
+          router.push('/coolperson');
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
+      } finally {
+        // Clean up URL by removing any auth-related parameters or hash
+        if (typeof window !== 'undefined') {
+          const url = new URL(window.location.href);
+          const cleanUrl = `${url.origin}${url.pathname}`;
+          window.history.replaceState({}, '', cleanUrl);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+  }, [router]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
@@ -75,33 +100,6 @@ function LoginContent() {
         )}
 
         <div className="relative z-10 w-full" data-testid="auth-container">
-          {/* Email Confirmation Success Message */}
-          {showConfirmation && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              style={{
-                marginBottom: '2rem',
-                padding: '1rem',
-                background: theme === "professional" ? '#dcfce7' : 'rgba(0, 255, 0, 0.1)',
-                border: theme === "professional" 
-                  ? '1px solid #4ade80'
-                  : '2px solid #00ff00',
-                borderRadius: theme === "professional" ? '8px' : '0',
-                color: theme === "professional" ? '#16a34a' : '#00ff00',
-                fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                fontSize: '0.875rem',
-                textAlign: 'center'
-              }}
-            >
-              {theme === "professional" 
-                ? "✓ E-Mail erfolgreich bestätigt! Sie können sich jetzt anmelden."
-                : ">>> EMAIL_CONFIRMED: LOGIN_ENABLED <<<"
-              }
-            </motion.div>
-          )}
-
           <AuthForm mode="login" onToggleMode={() => {}} />
           
           {/* Link to signup page */}

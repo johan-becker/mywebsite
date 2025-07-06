@@ -70,12 +70,14 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
             data: {
               full_name: fullName,
             },
-            emailRedirectTo: `${window.location.origin}/auth/callback?type=signup`
+            emailRedirectTo: `${window.location.origin}/auth/callback`
           }
         });
 
         if (error) throw error;
-        setMessage('Registration successful! Please check your email and click the confirmation link to activate your account.');
+        setMessage(theme === "professional" 
+          ? 'Registration successful! Please check your email and click the confirmation link to activate your account.'
+          : '>>> REGISTRATION_COMPLETE: CHECK_EMAIL <<<');
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -83,7 +85,9 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
         });
 
         if (error) throw error;
-        setMessage('Successfully logged in!');
+        setMessage(theme === "professional" 
+          ? 'Successfully logged in!'
+          : '>>> ACCESS_GRANTED <<<');
         
         // Redirect to the cool person Easter egg page after successful login
         setTimeout(() => {
