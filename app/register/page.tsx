@@ -33,7 +33,7 @@ function RegisterContent() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push('/coolperson');
+        router.push('/login');
         return;
       }
       setIsCheckingAuth(false);
