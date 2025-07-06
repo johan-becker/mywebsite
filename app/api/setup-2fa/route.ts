@@ -8,9 +8,9 @@ export async function POST(request: NextRequest) {
     // Get the user from the session
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
-    if (userError || !user) {
+    if (userError || !user || !user.email) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized or missing email' },
         { status: 401 }
       );
     }
