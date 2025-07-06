@@ -62,7 +62,7 @@ export default function CoolPerson() {
   const randomMessage = congratsMessages[Math.floor(Math.random() * congratsMessages.length)];
 
   return (
-    <div className="min-h-screen p-8" style={{
+    <div className="min-h-screen p-4 sm:p-6 md:p-8 overflow-x-hidden" style={{
       background: theme === "professional" 
         ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
         : 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
@@ -96,7 +96,7 @@ export default function CoolPerson() {
         ))}
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10 w-full px-4">
         <motion.div
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -123,13 +123,17 @@ export default function CoolPerson() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className={`text-6xl font-bold mb-6 ${theme === "matrix" ? "glitch" : ""}`}
+            className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 ${theme === "matrix" ? "glitch" : ""}`}
             style={{
               fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
               color: theme === "professional" ? '#ffffff' : '#00ff00',
               textShadow: theme === "professional" 
                 ? '0 0 30px rgba(251, 191, 36, 0.5)'
                 : '0 0 30px rgba(0, 255, 0, 0.8)',
+              maxWidth: '100%',
+              overflowWrap: 'break-word',
+              wordBreak: 'break-word',
+              hyphens: 'auto'
             }}
           >
             {theme === "professional" ? "🎉 COOL PERSON DETECTED!" : "[ELITE_STATUS_CONFIRMED]"}
@@ -139,11 +143,13 @@ export default function CoolPerson() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="text-2xl mb-8"
+            className="text-lg md:text-xl lg:text-2xl mb-8"
             style={{
               fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
               color: theme === "professional" ? '#f1f5f9' : '#00ff00',
-              opacity: 0.9
+              opacity: 0.9,
+              maxWidth: '100%',
+              overflowWrap: 'break-word'
             }}
           >
             {randomMessage}
