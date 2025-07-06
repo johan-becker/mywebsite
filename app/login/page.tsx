@@ -82,16 +82,16 @@ function LoginContent() {
       const { data: { user } } = await supabase.auth.getUser();
       const userMetadata = user?.user_metadata || {};
       const twoFactorEnabled = userMetadata.two_factor_enabled;
-
+      
       if (twoFactorEnabled) {
         // Redirect to 2FA page
         router.push('/2fa');
       } else {
-        // Redirect to coolperson page
+      // Redirect to coolperson page
         setMessage(theme === "professional" ? 'Erfolgreich angemeldet!' : '>>> ACCESS_GRANTED');
-        setTimeout(() => {
-          router.push('/coolperson');
-        }, 1500);
+      setTimeout(() => {
+        router.push('/coolperson');
+      }, 1500);
       }
 
     } catch (error: any) {
@@ -511,102 +511,102 @@ function LoginContent() {
             {/* Code Login Form */}
             {loginMethod === 'code' && (
               <form onSubmit={handleSendCode} className="space-y-6">
-                <motion.div variants={itemVariants}>
-                  <label 
-                    htmlFor="emailOrPhone"
-                    style={{
-                      display: 'block',
-                      marginBottom: '0.5rem',
-                      fontWeight: 600,
-                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                      color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                      fontSize: '0.875rem'
-                    }}
-                  >
+                    <motion.div variants={itemVariants}>
+                      <label 
+                        htmlFor="emailOrPhone"
+                        style={{
+                          display: 'block',
+                          marginBottom: '0.5rem',
+                          fontWeight: 600,
+                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                          fontSize: '0.875rem'
+                        }}
+                      >
                     <Smartphone className="w-4 h-4 inline mr-2" />
                     {theme === "professional" ? "E-Mail oder Telefonnummer" : "EMAIL_OR_PHONE"}
-                  </label>
-                  <input
-                    type="text"
-                    id="emailOrPhone"
-                    value={emailOrPhone}
-                    onChange={(e) => setEmailOrPhone(e.target.value)}
-                    required
+                      </label>
+                      <input
+                        type="text"
+                        id="emailOrPhone"
+                        value={emailOrPhone}
+                        onChange={(e) => setEmailOrPhone(e.target.value)}
+                        required
                     placeholder={theme === "professional" ? "ihre@email.de oder +49123456789" : "user@matrix.net or +1234567890"}
-                    style={{
-                      width: '100%',
-                      padding: '1rem',
-                      background: theme === "professional" 
-                        ? 'var(--background-secondary)'
-                        : 'rgba(0, 0, 0, 0.3)',
-                      border: theme === "professional" 
-                        ? '1px solid var(--border-color)'
-                        : '2px solid rgba(0, 255, 0, 0.3)',
-                      borderRadius: theme === "professional" ? '8px' : '0',
-                      color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                      fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'all 0.3s ease'
-                    }}
-                  />
-                </motion.div>
+                        style={{
+                          width: '100%',
+                          padding: '1rem',
+                          background: theme === "professional" 
+                            ? 'var(--background-secondary)'
+                            : 'rgba(0, 0, 0, 0.3)',
+                          border: theme === "professional" 
+                            ? '1px solid var(--border-color)'
+                            : '2px solid rgba(0, 255, 0, 0.3)',
+                          borderRadius: theme === "professional" ? '8px' : '0',
+                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                          fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                          fontSize: '1rem',
+                          outline: 'none',
+                          transition: 'all 0.3s ease'
+                        }}
+                      />
+                    </motion.div>
 
                 <motion.div variants={itemVariants}>
-                  <motion.button
-                    type="submit"
-                    disabled={loading}
-                    whileHover={{ scale: loading ? 1 : 1.02 }}
-                    whileTap={{ scale: loading ? 1 : 0.98 }}
-                    style={{
-                      width: '100%',
-                      padding: '1rem 2rem',
-                      background: loading 
-                        ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 0, 0.1)')
-                        : (theme === "professional"
-                          ? 'var(--primary-color)'
-                          : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))'),
-                      border: theme === "professional"
-                        ? 'none'
-                        : '2px solid rgba(0, 255, 0, 0.7)',
-                      borderRadius: theme === "professional" ? '8px' : '0',
-                      color: theme === "professional" ? 'white' : '#00ff00',
-                      fontWeight: 600,
-                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                      fontSize: '1rem',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.3s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                      opacity: loading ? 0.7 : 1
-                    }}
-                  >
-                    {loading ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            border: '2px solid transparent',
-                            borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ff00'}`,
-                            borderRadius: '50%'
-                          }}
-                        />
-                        {theme === "professional" ? "Code wird gesendet..." : "SENDING_CODE..."}
-                      </>
-                    ) : (
-                      <>
+                      <motion.button
+                        type="submit"
+                        disabled={loading}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: loading ? 1 : 0.98 }}
+                        style={{
+                          width: '100%',
+                          padding: '1rem 2rem',
+                          background: loading 
+                            ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 0, 0.1)')
+                            : (theme === "professional"
+                              ? 'var(--primary-color)'
+                              : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))'),
+                          border: theme === "professional"
+                            ? 'none'
+                            : '2px solid rgba(0, 255, 0, 0.7)',
+                          borderRadius: theme === "professional" ? '8px' : '0',
+                          color: theme === "professional" ? 'white' : '#00ff00',
+                          fontWeight: 600,
+                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                          fontSize: '1rem',
+                          cursor: loading ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.3s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.5rem',
+                          opacity: loading ? 0.7 : 1
+                        }}
+                      >
+                        {loading ? (
+                          <>
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              style={{
+                                width: '20px',
+                                height: '20px',
+                                border: '2px solid transparent',
+                                borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ff00'}`,
+                                borderRadius: '50%'
+                              }}
+                            />
+                            {theme === "professional" ? "Code wird gesendet..." : "SENDING_CODE..."}
+                          </>
+                        ) : (
+                          <>
                         <Smartphone size={20} />
-                        {theme === "professional" ? "Code senden" : "SEND_CODE"}
-                      </>
-                    )}
-                  </motion.button>
-                </motion.div>
-              </form>
+                            {theme === "professional" ? "Code senden" : "SEND_CODE"}
+                          </>
+                        )}
+                      </motion.button>
+                    </motion.div>
+                  </form>
             )}
 
             {/* Error/Success Messages */}
@@ -651,27 +651,27 @@ function LoginContent() {
               </Link>
               <div>
                 <span style={{
-                  fontSize: '0.875rem',
-                  fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                  color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
+              fontSize: '0.875rem',
+              fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+              color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
                   opacity: 0.8
-                }}>
+            }}>
                   {theme === "professional" ? "Noch kein Konto?" : ">>> NO_ACCOUNT?"}
                 </span>
-                <Link 
+            <Link 
                   href="/signup"
-                  style={{
+              style={{
                     marginLeft: '0.5rem',
-                    color: theme === "professional" ? 'var(--primary-color)' : '#00ff00',
-                    fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
+                color: theme === "professional" ? 'var(--primary-color)' : '#00ff00',
+                fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                fontWeight: 600,
+                fontSize: '0.875rem',
                     textDecoration: 'underline'
-                  }}
-                >
+              }}
+            >
                   {theme === "professional" ? "Registrieren" : "[REGISTER]"}
                 </Link>
-              </div>
+        </div>
             </motion.div>
           </motion.div>
         </motion.div>

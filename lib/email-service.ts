@@ -20,7 +20,7 @@ export async function sendVerificationEmail({ to, code, expiresAt }: SendEmailOp
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Auth <noreply@johanbecker.de>', // Replace with your domain
+      from: 'Auth <noreply@johanbecker.de>',
       to: [to],
       subject: 'Ihr Anmeldecode',
       html: `

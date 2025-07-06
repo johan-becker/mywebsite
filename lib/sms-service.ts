@@ -6,10 +6,10 @@ export interface SendSMSOptions {
   expiresAt: Date;
 }
 
-// SMS77 Service implementation
+// Seven.io SMS Service implementation
 export async function sendVerificationSMS({ to, code, expiresAt }: SendSMSOptions): Promise<void> {
-  if (!process.env.SMS77_API_KEY) {
-    throw new Error('SMS77_API_KEY is not configured');
+  if (!process.env.SEVEN_API_KEY) {
+    throw new Error('SEVEN_API_KEY is not configured');
   }
 
   // Format phone number (remove any non-digit characters except +)
@@ -29,14 +29,14 @@ export async function sendVerificationSMS({ to, code, expiresAt }: SendSMSOption
   const message = `Ihr Anmeldecode: ${code}\n\nDieser Code ist bis ${expirationTime} gültig.\n\nTeilen Sie diesen Code niemals mit anderen.`;
 
   try {
-    const response = await axios.post('https://gateway.sms77.io/api/sms', {
+    const response = await axios.post('https://gateway.seven.io/api/sms', {
       to: formattedPhone,
       text: message,
       from: 'Portfolio', // Sender name (max 11 chars for alphanumeric)
       return_msg_id: 1
     }, {
       headers: {
-        'X-API-Key': process.env.SMS77_API_KEY,
+        'X-API-Key': process.env.SEVEN_API_KEY,
         'Content-Type': 'application/json'
       }
     });
@@ -57,7 +57,7 @@ export async function sendVerificationSMS({ to, code, expiresAt }: SendSMSOption
   }
 }
 
-// Alternative: Twilio implementation (commented out, can be used instead)
+// Alternative: Twilio implementation (commented out, can be used instead of Seven.io)
 /*
 import twilio from 'twilio';
 

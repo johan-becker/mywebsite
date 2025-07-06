@@ -24,15 +24,15 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 RESEND_API_KEY=re_your_resend_api_key
 ```
 
-### SMS Service (SMS77)
+### SMS Service (Seven.io)
 ```bash
-# Get this from https://www.sms77.io/
-SMS77_API_KEY=your_sms77_api_key
+# Get this from https://www.seven.io/
+SEVEN_API_KEY=your_seven_api_key
 ```
 
 ### Alternative SMS Service (Twilio - Optional)
 ```bash
-# If you prefer to use Twilio instead of SMS77
+# If you prefer to use Twilio instead of Seven.io
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=your_twilio_phone_number
@@ -65,11 +65,11 @@ Before using the authentication flow, you need to create the `login_codes` table
 3. Create an API key
 4. Update the `from` address in `lib/email-service.ts` to use your domain
 
-### 3. SMS77 Setup
-1. Sign up at https://www.sms77.io/
+### 3. Seven.io Setup
+1. Sign up at https://www.seven.io/
 2. Add credits to your account
 3. Get your API key from the dashboard
-4. Test SMS sending in the SMS77 interface
+4. Test SMS sending in the Seven.io interface
 
 ### 4. Domain Configuration
 Make sure to configure your domain in Resend:
@@ -101,9 +101,9 @@ You can test the authentication flow:
    - Make sure you've added the Resend API key to `.env.local`
    - Restart your development server after adding environment variables
 
-2. **"SMS77_API_KEY is not configured"**
-   - Add your SMS77 API key to `.env.local`
-   - Make sure you have credits in your SMS77 account
+2. **"SEVEN_API_KEY is not configured"**
+   - Add your Seven.io API key to `.env.local`
+   - Make sure you have credits in your Seven.io account
 
 3. **"User not found"**
    - The user must exist in Supabase auth.users before they can request a code
@@ -122,7 +122,7 @@ You can test the authentication flow:
 ### SMS Issues
 
 - Verify phone number format (international format with +)
-- Check SMS77 account balance
+- Check Seven.io account balance
 - Make sure the destination country is supported
 
 ## Production Deployment
