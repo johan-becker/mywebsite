@@ -1,4 +1,5 @@
-import axios from 'axios';
+// Seven.io SMS Service - using native fetch API
+import { sendSMS } from './sendSms';
 
 export interface SendSMSOptions {
   to: string;
@@ -6,12 +7,8 @@ export interface SendSMSOptions {
   expiresAt: Date;
 }
 
-// Seven.io SMS Service implementation
+// Seven.io SMS Service implementation for verification codes
 export async function sendVerificationSMS({ to, code, expiresAt }: SendSMSOptions): Promise<void> {
-  if (!process.env.SEVEN_API_KEY) {
-    throw new Error('SEVEN_API_KEY is not configured');
-  }
-
   // Format phone number (remove any non-digit characters except +)
   const phoneNumber = to.replace(/[^\d+]/g, '');
   
@@ -29,31 +26,11 @@ export async function sendVerificationSMS({ to, code, expiresAt }: SendSMSOption
   const message = `Ihr Anmeldecode: ${code}\n\nDieser Code ist bis ${expirationTime} gültig.\n\nTeilen Sie diesen Code niemals mit anderen.`;
 
   try {
-    const response = await axios.post('https://gateway.seven.io/api/sms', {
-      to: formattedPhone,
-      text: message,
-      from: 'Portfolio', // Sender name (max 11 chars for alphanumeric)
-      return_msg_id: 1
-    }, {
-      headers: {
-        'X-API-Key': process.env.SEVEN_API_KEY,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.data.success !== 100) {
-      throw new Error(`SMS sending failed: ${response.data.error || 'Unknown error'}`);
-    }
-
-    console.log('Verification SMS sent successfully:', response.data.msg_id);
+    const result = await sendSMS(formattedPhone, message);
+    console.log('Verification SMS sent successfully:', result);
   } catch (error: any) {
     console.error('SMS sending error:', error);
-    
-    if (error.response) {
-      throw new Error(`Failed to send SMS: ${error.response.data?.error || error.response.statusText}`);
-    } else {
-      throw new Error(`Failed to send verification SMS: ${error.message}`);
-    }
+    throw new Error(`Failed to send verification SMS: ${error.message}`);
   }
 }
 

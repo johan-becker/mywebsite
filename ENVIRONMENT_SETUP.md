@@ -70,6 +70,7 @@ Before using the authentication flow, you need to create the `login_codes` table
 2. Add credits to your account
 3. Get your API key from the dashboard
 4. Test SMS sending in the Seven.io interface
+5. Note: Seven.io uses Basic Authentication with your API key
 
 ### 4. Domain Configuration
 Make sure to configure your domain in Resend:
