@@ -3,9 +3,9 @@
 import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Mail, ArrowRight } from 'lucide-react';
+import { CheckCircle, Mail, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import ProfessionalBackground from '@/components/ProfessionalBackground';
 import LoadingSpinner from '@/components/LoadingSpinner';
@@ -17,76 +17,35 @@ export const dynamic = 'force-dynamic';
 function VerifyContent() {
   const { theme } = useTheme();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isVerifying, setIsVerifying] = useState(true);
-  const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const verifyToken = async () => {
+    // Check if user is already logged in
+    const checkSession = async () => {
       try {
-        // Get token from URL hash (Supabase typically sends it in the hash)
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const access_token = hashParams.get('access_token');
-        const refresh_token = hashParams.get('refresh_token');
-        
-        // Also check URL search params as fallback
-        const access_token_query = searchParams.get('access_token');
-        const refresh_token_query = searchParams.get('refresh_token');
-        
-        const token = access_token || access_token_query;
-        const refresh = refresh_token || refresh_token_query;
-
-        if (!token) {
-          setVerificationStatus('error');
-          setMessage(theme === "professional" 
-            ? 'Kein Verifizierungstoken gefunden. Bitte fordern Sie einen neuen Link an.'
-            : '>>> NO_VERIFICATION_TOKEN_FOUND');
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          router.push('/coolperson');
           return;
         }
-
-        // Verify the token with Supabase
-        const { data, error } = await supabase.auth.verifyOtp({
-          token_hash: window.location.hash,
-          type: 'email'
-        });
-
-        if (error) {
-          setVerificationStatus('error');
-          setMessage(theme === "professional" 
-            ? 'Verifizierung fehlgeschlagen. Der Link ist möglicherweise abgelaufen.'
-            : '>>> VERIFICATION_FAILED');
-          return;
-        }
-
-        setVerificationStatus('success');
-        setMessage(theme === "professional" 
-          ? 'E-Mail erfolgreich verifiziert! Sie werden zur Anmeldung weitergeleitet.'
-          : '>>> EMAIL_VERIFIED_SUCCESSFULLY');
-
-        // Clean up URL
-        window.history.replaceState({}, '', '/verify');
-
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
-
       } catch (error) {
-        console.error('Verification error:', error);
-        setVerificationStatus('error');
-        setMessage(theme === "professional" 
-          ? 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.'
-          : '>>> ERROR_OCCURRED');
+        console.error('Session check error:', error);
       } finally {
-        setIsVerifying(false);
+        setIsLoading(false);
       }
     };
 
-    verifyToken();
-  }, [router, searchParams, theme]);
+    checkSession();
 
-  if (isVerifying) {
+    // Auto redirect to login after 5 seconds
+    const timer = setTimeout(() => {
+      router.push('/login');
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
+
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -183,11 +142,7 @@ function VerifyContent() {
               variants={itemVariants}
               className="mb-6"
             >
-              {verificationStatus === 'success' ? (
-                <CheckCircle size={64} className={theme === "professional" ? "text-green-600 mx-auto" : "text-[#00ff00] mx-auto"} />
-              ) : (
-                <XCircle size={64} className={theme === "professional" ? "text-red-600 mx-auto" : "text-[#ff0000] mx-auto"} />
-              )}
+              <CheckCircle size={64} className={theme === "professional" ? "text-green-600 mx-auto" : "text-[#00ff00] mx-auto"} />
             </motion.div>
 
             <motion.h2
@@ -201,10 +156,7 @@ function VerifyContent() {
                 color: theme === "professional" ? 'var(--text-primary)' : '#00ff00'
               }}
             >
-              {verificationStatus === 'success' 
-                ? (theme === "professional" ? "Verifizierung erfolgreich!" : "[VERIFICATION_SUCCESS]")
-                : (theme === "professional" ? "Verifizierung fehlgeschlagen" : "[VERIFICATION_FAILED]")
-              }
+              {theme === "professional" ? "Registrierung abgeschlossen!" : "[REGISTRATION_COMPLETE]"}
             </motion.h2>
 
             <motion.div
@@ -212,96 +164,24 @@ function VerifyContent() {
               style={{
                 padding: '1rem',
                 borderRadius: theme === "professional" ? '8px' : '0',
-                background: verificationStatus === 'success'
-                  ? (theme === "professional" ? '#dcfce7' : 'rgba(0, 255, 0, 0.1)')
-                  : (theme === "professional" ? '#fee2e2' : 'rgba(255, 0, 0, 0.1)'),
-                border: theme === "professional" 
-                  ? `1px solid ${verificationStatus === 'success' ? '#4ade80' : '#f87171'}`
-                  : `2px solid ${verificationStatus === 'success' ? '#00ff00' : '#ff0000'}`,
-                color: verificationStatus === 'success'
-                  ? (theme === "professional" ? '#16a34a' : '#00ff00')
-                  : (theme === "professional" ? '#dc2626' : '#ff0000'),
+                background: theme === "professional" ? '#dcfce7' : 'rgba(0, 255, 0, 0.1)',
+                border: theme === "professional" ? '1px solid #4ade80' : '2px solid #00ff00',
+                color: theme === "professional" ? '#16a34a' : '#00ff00',
                 fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
                 fontSize: '1rem',
                 marginBottom: '2rem'
               }}
             >
-              {message}
+              {theme === "professional" 
+                ? "Ihr Konto wurde erfolgreich erstellt! Sie können sich jetzt anmelden."
+                : ">>> ACCOUNT_CREATED_SUCCESSFULLY. LOGIN_AVAILABLE_NOW."
+              }
             </motion.div>
 
+            {/* Continue to Login Button */}
             <motion.div
               variants={itemVariants}
               className="space-y-4"
-            >
-              {verificationStatus === 'success' ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1, duration: 0.5 }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
-                    fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                    fontSize: '0.875rem'
-                  }}
-                >
-                  <ArrowRight size={16} />
-                  {theme === "professional" ? "Weiterleitung in 3 Sekunden..." : ">>> REDIRECTING_IN_3_SECONDS..."}
-                </motion.div>
-              ) : (
-                <div className="space-y-3">
-                  <Link 
-                    href="/login"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem',
-                      padding: '1rem 2rem',
-                      background: theme === "professional"
-                        ? 'var(--primary-color)'
-                        : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))',
-                      border: theme === "professional"
-                        ? 'none'
-                        : '2px solid rgba(0, 255, 0, 0.7)',
-                      borderRadius: theme === "professional" ? '8px' : '0',
-                      color: theme === "professional" ? 'white' : '#00ff00',
-                      fontWeight: 600,
-                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                      fontSize: '1rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.3s ease',
-                      width: '100%'
-                    }}
-                  >
-                    <Mail size={20} />
-                    {theme === "professional" ? "Zur Anmeldung" : "GO_TO_LOGIN"}
-                  </Link>
-                  
-                  <Link 
-                    href="/signup"
-                    style={{
-                      display: 'inline-block',
-                      color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
-                      fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                      fontSize: '0.875rem',
-                      textDecoration: 'underline',
-                      opacity: 0.8
-                    }}
-                  >
-                    {theme === "professional" ? "Neuen Account erstellen" : "[CREATE_NEW_ACCOUNT]"}
-                  </Link>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Always show continue to login button for general verification page */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-6 text-center"
             >
               <Link 
                 href="/login"
@@ -328,7 +208,33 @@ function VerifyContent() {
                 }}
               >
                 <ArrowRight size={20} />
-                {theme === "professional" ? "Weiter zur Anmeldung" : "CONTINUE_TO_LOGIN"}
+                {theme === "professional" ? "Zur Anmeldung" : "CONTINUE_TO_LOGIN"}
+              </Link>
+              
+              <p style={{
+                fontSize: '0.875rem',
+                fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                color: theme === "professional" ? 'var(--text-secondary)' : 'rgba(0, 255, 0, 0.7)',
+                opacity: 0.8
+              }}>
+                {theme === "professional" 
+                  ? "Automatische Weiterleitung in 5 Sekunden..."
+                  : ">>> AUTO_REDIRECT_IN_5_SECONDS..."
+                }
+              </p>
+              
+              <Link 
+                href="/signup"
+                style={{
+                  display: 'inline-block',
+                  color: theme === "professional" ? 'var(--text-secondary)' : 'rgba(0, 255, 0, 0.7)',
+                  fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                  fontSize: '0.875rem',
+                  textDecoration: 'underline',
+                  opacity: 0.8
+                }}
+              >
+                {theme === "professional" ? "Anderes Konto erstellen" : "[CREATE_DIFFERENT_ACCOUNT]"}
               </Link>
             </motion.div>
           </motion.div>

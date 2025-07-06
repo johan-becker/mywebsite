@@ -73,15 +73,19 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
             data: {
               full_name: fullName,
               phone_number: phoneNumber,
-            },
-            emailRedirectTo: `${window.location.origin}/auth/callback`
+            }
           }
         });
 
         if (error) throw error;
         setMessage(theme === "professional" 
-          ? 'Registration successful! Please check your email and click the confirmation link to activate your account.'
-          : '>>> REGISTRATION_COMPLETE: CHECK_EMAIL <<<');
+          ? 'Registrierung erfolgreich! Sie können sich jetzt anmelden.'
+          : '>>> REGISTRATION_COMPLETE: LOGIN_NOW <<<');
+        
+        // Redirect to login after successful registration
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
