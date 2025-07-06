@@ -136,7 +136,12 @@ export default function CoolPerson() {
               hyphens: 'auto'
             }}
           >
-            {theme === "professional" ? "🎉 COOL PERSON DETECTED!" : "[ELITE_STATUS_CONFIRMED]"}
+            {theme === "professional" ? "🎉 COOL PERSON DETECTED!" : (
+              <>
+                [ELITE_STATUS]<br />
+                [CONFIRMED]
+              </>
+            )}
           </motion.h1>
 
           <motion.p
