@@ -282,7 +282,7 @@ function VerifyContent() {
                   </Link>
                   
                   <Link 
-                    href="/register"
+                    href="/signup"
                     style={{
                       display: 'inline-block',
                       color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
@@ -296,6 +296,40 @@ function VerifyContent() {
                   </Link>
                 </div>
               )}
+            </motion.div>
+
+            {/* Always show continue to login button for general verification page */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-6 text-center"
+            >
+              <Link 
+                href="/login"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  padding: '1rem 2rem',
+                  background: theme === "professional"
+                    ? 'var(--primary-color)'
+                    : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))',
+                  border: theme === "professional"
+                    ? 'none'
+                    : '2px solid rgba(0, 255, 0, 0.7)',
+                  borderRadius: theme === "professional" ? '8px' : '0',
+                  color: theme === "professional" ? 'white' : '#00ff00',
+                  fontWeight: 600,
+                  fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                  fontSize: '1rem',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease',
+                  width: '100%'
+                }}
+              >
+                <ArrowRight size={20} />
+                {theme === "professional" ? "Weiter zur Anmeldung" : "CONTINUE_TO_LOGIN"}
+              </Link>
             </motion.div>
           </motion.div>
         </motion.div>

@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { supabase } from '@/lib/supabase';
-import { Mail, Lock, LogIn, Smartphone, Eye, EyeOff, Send } from 'lucide-react';
+import { Mail, Lock, LogIn, Smartphone, Eye, EyeOff } from 'lucide-react';
 
 // Force dynamic rendering to avoid build-time environment variable issues
 export const dynamic = 'force-dynamic';
@@ -30,9 +30,6 @@ function LoginContent() {
   
   // Code login fields
   const [emailOrPhone, setEmailOrPhone] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [codeType, setCodeType] = useState<'email' | 'phone'>('email');
-  const [codeSent, setCodeSent] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -81,12 +78,21 @@ function LoginContent() {
 
       if (error) throw error;
       
-      setMessage(theme === "professional" ? 'Erfolgreich angemeldet!' : '>>> ACCESS_GRANTED');
-      
-      // Redirect to coolperson page
-      setTimeout(() => {
-        router.push('/coolperson');
-      }, 1500);
+      // Check if user has 2FA enabled
+      const { data: { user } } = await supabase.auth.getUser();
+      const userMetadata = user?.user_metadata || {};
+      const twoFactorEnabled = userMetadata.two_factor_enabled;
+
+      if (twoFactorEnabled) {
+        // Redirect to 2FA page
+        router.push('/2fa');
+      } else {
+        // Redirect to coolperson page
+        setMessage(theme === "professional" ? 'Erfolgreich angemeldet!' : '>>> ACCESS_GRANTED');
+        setTimeout(() => {
+          router.push('/coolperson');
+        }, 1500);
+      }
 
     } catch (error: any) {
       setError(error.message);
@@ -121,50 +127,14 @@ function LoginContent() {
         throw new Error(data.error || 'Failed to send code');
       }
 
-      setCodeType(isEmail ? 'email' : 'phone');
-      setCodeSent(true);
-      setMessage(data.message);
+      // Store the email/phone and type in localStorage for the code page
+      localStorage.setItem('codeVerificationData', JSON.stringify({
+        emailOrPhone,
+        type: isEmail ? 'email' : 'phone'
+      }));
 
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setMessage('');
-
-    try {
-      const payload = {
-        code: verificationCode,
-        type: codeType,
-        ...(codeType === 'email' ? { email: emailOrPhone } : { phone: emailOrPhone })
-      };
-
-      const response = await fetch('/api/verify-code', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Code verification failed');
-      }
-
-      setMessage(theme === "professional" ? 'Erfolgreich angemeldet!' : '>>> ACCESS_GRANTED');
-      
-      // Redirect to coolperson page
-      setTimeout(() => {
-        router.push('/coolperson');
-      }, 1500);
+      // Redirect to code page
+      router.push('/code');
 
     } catch (error: any) {
       setError(error.message);
@@ -312,7 +282,6 @@ function LoginContent() {
                   type="button"
                   onClick={() => {
                     setLoginMethod('password');
-                    setCodeSent(false);
                     setError('');
                     setMessage('');
                   }}
@@ -346,7 +315,6 @@ function LoginContent() {
                   type="button"
                   onClick={() => {
                     setLoginMethod('code');
-                    setCodeSent(false);
                     setError('');
                     setMessage('');
                   }}
@@ -527,12 +495,12 @@ function LoginContent() {
                             borderRadius: '50%'
                           }}
                         />
-                        {theme === "professional" ? "Anmeldung..." : "AUTHENTICATING..."}
+                        {theme === "professional" ? "Anmelden..." : "LOGGING_IN..."}
                       </>
                     ) : (
                       <>
                         <LogIn size={20} />
-                        {theme === "professional" ? "Anmelden" : "ACCESS_GRANTED"}
+                        {theme === "professional" ? "Anmelden" : "LOGIN"}
                       </>
                     )}
                   </motion.button>
@@ -542,233 +510,112 @@ function LoginContent() {
 
             {/* Code Login Form */}
             {loginMethod === 'code' && (
-              <div className="space-y-6">
-                {!codeSent ? (
-                  <form onSubmit={handleSendCode}>
-                    <motion.div variants={itemVariants}>
-                      <label 
-                        htmlFor="emailOrPhone"
-                        style={{
-                          display: 'block',
-                          marginBottom: '0.5rem',
-                          fontWeight: 600,
-                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                          fontSize: '0.875rem'
-                        }}
-                      >
-                        <Mail className="w-4 h-4 inline mr-2" />
-                        {theme === "professional" ? "E-Mail oder Telefon" : "EMAIL_OR_PHONE"}
-                      </label>
-                      <input
-                        type="text"
-                        id="emailOrPhone"
-                        value={emailOrPhone}
-                        onChange={(e) => setEmailOrPhone(e.target.value)}
-                        required
-                        placeholder={theme === "professional" ? "ihre@email.de oder +49123456789" : "user@matrix.net or +49123456789"}
-                        style={{
-                          width: '100%',
-                          padding: '1rem',
-                          background: theme === "professional" 
-                            ? 'var(--background-secondary)'
-                            : 'rgba(0, 0, 0, 0.3)',
-                          border: theme === "professional" 
-                            ? '1px solid var(--border-color)'
-                            : '2px solid rgba(0, 255, 0, 0.3)',
-                          borderRadius: theme === "professional" ? '8px' : '0',
-                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                          fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                          fontSize: '1rem',
-                          outline: 'none',
-                          transition: 'all 0.3s ease'
-                        }}
-                      />
-                    </motion.div>
+              <form onSubmit={handleSendCode} className="space-y-6">
+                <motion.div variants={itemVariants}>
+                  <label 
+                    htmlFor="emailOrPhone"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      fontWeight: 600,
+                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                      color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    <Smartphone className="w-4 h-4 inline mr-2" />
+                    {theme === "professional" ? "E-Mail oder Telefonnummer" : "EMAIL_OR_PHONE"}
+                  </label>
+                  <input
+                    type="text"
+                    id="emailOrPhone"
+                    value={emailOrPhone}
+                    onChange={(e) => setEmailOrPhone(e.target.value)}
+                    required
+                    placeholder={theme === "professional" ? "ihre@email.de oder +49123456789" : "user@matrix.net or +1234567890"}
+                    style={{
+                      width: '100%',
+                      padding: '1rem',
+                      background: theme === "professional" 
+                        ? 'var(--background-secondary)'
+                        : 'rgba(0, 0, 0, 0.3)',
+                      border: theme === "professional" 
+                        ? '1px solid var(--border-color)'
+                        : '2px solid rgba(0, 255, 0, 0.3)',
+                      borderRadius: theme === "professional" ? '8px' : '0',
+                      color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                      fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                      fontSize: '1rem',
+                      outline: 'none',
+                      transition: 'all 0.3s ease'
+                    }}
+                  />
+                </motion.div>
 
-                    <motion.div variants={itemVariants} className="mt-4">
-                      <motion.button
-                        type="submit"
-                        disabled={loading}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
-                        whileTap={{ scale: loading ? 1 : 0.98 }}
-                        style={{
-                          width: '100%',
-                          padding: '1rem 2rem',
-                          background: loading 
-                            ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 0, 0.1)')
-                            : (theme === "professional"
-                              ? 'var(--primary-color)'
-                              : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))'),
-                          border: theme === "professional"
-                            ? 'none'
-                            : '2px solid rgba(0, 255, 0, 0.7)',
-                          borderRadius: theme === "professional" ? '8px' : '0',
-                          color: theme === "professional" ? 'white' : '#00ff00',
-                          fontWeight: 600,
-                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                          fontSize: '1rem',
-                          cursor: loading ? 'not-allowed' : 'pointer',
-                          transition: 'all 0.3s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '0.5rem',
-                          opacity: loading ? 0.7 : 1
-                        }}
-                      >
-                        {loading ? (
-                          <>
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                                border: '2px solid transparent',
-                                borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ff00'}`,
-                                borderRadius: '50%'
-                              }}
-                            />
-                            {theme === "professional" ? "Code wird gesendet..." : "SENDING_CODE..."}
-                          </>
-                        ) : (
-                          <>
-                            <Send size={20} />
-                            {theme === "professional" ? "Code senden" : "SEND_CODE"}
-                          </>
-                        )}
-                      </motion.button>
-                    </motion.div>
-                  </form>
-                ) : (
-                  <form onSubmit={handleVerifyCode}>
-                    <motion.div variants={itemVariants}>
-                      <label 
-                        htmlFor="verificationCode"
-                        style={{
-                          display: 'block',
-                          marginBottom: '0.5rem',
-                          fontWeight: 600,
-                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                          fontSize: '0.875rem'
-                        }}
-                      >
-                        <Smartphone className="w-4 h-4 inline mr-2" />
-                        {theme === "professional" ? "Bestätigungscode" : "VERIFICATION_CODE"}
-                      </label>
-                      <input
-                        type="text"
-                        id="verificationCode"
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value)}
-                        required
-                        placeholder={theme === "professional" ? "6-stelliger Code" : "6-digit code"}
-                        maxLength={6}
-                        style={{
-                          width: '100%',
-                          padding: '1rem',
-                          background: theme === "professional" 
-                            ? 'var(--background-secondary)'
-                            : 'rgba(0, 0, 0, 0.3)',
-                          border: theme === "professional" 
-                            ? '1px solid var(--border-color)'
-                            : '2px solid rgba(0, 255, 0, 0.3)',
-                          borderRadius: theme === "professional" ? '8px' : '0',
-                          color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
-                          fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                          fontSize: '1rem',
-                          outline: 'none',
-                          transition: 'all 0.3s ease',
-                          textAlign: 'center',
-                          letterSpacing: '0.5rem'
-                        }}
-                      />
-                    </motion.div>
-
-                    <motion.div variants={itemVariants} className="mt-4">
-                      <motion.button
-                        type="submit"
-                        disabled={loading || verificationCode.length !== 6}
-                        whileHover={{ scale: loading ? 1 : 1.02 }}
-                        whileTap={{ scale: loading ? 1 : 0.98 }}
-                        style={{
-                          width: '100%',
-                          padding: '1rem 2rem',
-                          background: loading 
-                            ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 0, 0.1)')
-                            : (theme === "professional"
-                              ? 'var(--primary-color)'
-                              : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))'),
-                          border: theme === "professional"
-                            ? 'none'
-                            : '2px solid rgba(0, 255, 0, 0.7)',
-                          borderRadius: theme === "professional" ? '8px' : '0',
-                          color: theme === "professional" ? 'white' : '#00ff00',
-                          fontWeight: 600,
-                          fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
-                          fontSize: '1rem',
-                          cursor: loading ? 'not-allowed' : 'pointer',
-                          transition: 'all 0.3s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '0.5rem',
-                          opacity: loading || verificationCode.length !== 6 ? 0.7 : 1
-                        }}
-                      >
-                        {loading ? (
-                          <>
-                            <motion.div
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                                border: '2px solid transparent',
-                                borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ff00'}`,
-                                borderRadius: '50%'
-                              }}
-                            />
-                            {theme === "professional" ? "Verifizierung..." : "VERIFYING..."}
-                          </>
-                        ) : (
-                          <>
-                            <LogIn size={20} />
-                            {theme === "professional" ? "Code bestätigen" : "VERIFY_CODE"}
-                          </>
-                        )}
-                      </motion.button>
-                    </motion.div>
-
-                    <motion.div variants={itemVariants} className="mt-4 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setCodeSent(false)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: theme === "professional" ? 'var(--text-secondary)' : 'rgba(0, 255, 0, 0.7)',
-                          fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                          fontSize: '0.875rem',
-                          textDecoration: 'underline',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {theme === "professional" ? "Neuen Code anfordern" : ">>> REQUEST_NEW_CODE"}
-                      </button>
-                    </motion.div>
-                  </form>
-                )}
-              </div>
+                <motion.div variants={itemVariants}>
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileHover={{ scale: loading ? 1 : 1.02 }}
+                    whileTap={{ scale: loading ? 1 : 0.98 }}
+                    style={{
+                      width: '100%',
+                      padding: '1rem 2rem',
+                      background: loading 
+                        ? (theme === "professional" ? '#94a3b8' : 'rgba(0, 255, 0, 0.1)')
+                        : (theme === "professional"
+                          ? 'var(--primary-color)'
+                          : 'linear-gradient(45deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.4))'),
+                      border: theme === "professional"
+                        ? 'none'
+                        : '2px solid rgba(0, 255, 0, 0.7)',
+                      borderRadius: theme === "professional" ? '8px' : '0',
+                      color: theme === "professional" ? 'white' : '#00ff00',
+                      fontWeight: 600,
+                      fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                      fontSize: '1rem',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      opacity: loading ? 0.7 : 1
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            border: '2px solid transparent',
+                            borderTop: `2px solid ${theme === "professional" ? 'white' : '#00ff00'}`,
+                            borderRadius: '50%'
+                          }}
+                        />
+                        {theme === "professional" ? "Code wird gesendet..." : "SENDING_CODE..."}
+                      </>
+                    ) : (
+                      <>
+                        <Smartphone size={20} />
+                        {theme === "professional" ? "Code senden" : "SEND_CODE"}
+                      </>
+                    )}
+                  </motion.button>
+                </motion.div>
+              </form>
             )}
 
+            {/* Error/Success Messages */}
             {(error || message) && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 style={{
+                  marginTop: '1rem',
                   padding: '1rem',
                   borderRadius: theme === "professional" ? '8px' : '0',
                   background: error 
@@ -781,31 +628,40 @@ function LoginContent() {
                     ? (theme === "professional" ? '#dc2626' : '#ff0000')
                     : (theme === "professional" ? '#16a34a' : '#00ff00'),
                   fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                  fontSize: '0.875rem',
-                  marginTop: '1rem'
+                  fontSize: '0.875rem'
                 }}
               >
                 {error || message}
               </motion.div>
             )}
 
-            <motion.div
-              variants={itemVariants}
-              className="mt-6 text-center space-y-4"
-            >
+            {/* Links */}
+            <motion.div variants={itemVariants} className="mt-6 text-center space-y-2">
+              <Link 
+                href="/reset-password"
+                style={{
+                  display: 'block',
+                  color: theme === "professional" ? 'var(--text-secondary)' : 'rgba(0, 255, 0, 0.7)',
+                  fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                  fontSize: '0.875rem',
+                  textDecoration: 'underline'
+                }}
+              >
+                {theme === "professional" ? "Passwort vergessen?" : "[FORGOT_PASSWORD]"}
+              </Link>
               <div>
-                <p style={{
+                <span style={{
                   fontSize: '0.875rem',
                   fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
                   color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
-                  opacity: 0.8,
-                  marginBottom: '0.5rem'
+                  opacity: 0.8
                 }}>
-                  {theme === "professional" ? "Noch kein Konto?" : ">>> NO ACCOUNT?"}
-                </p>
+                  {theme === "professional" ? "Noch kein Konto?" : ">>> NO_ACCOUNT?"}
+                </span>
                 <Link 
-                  href="/register"
+                  href="/signup"
                   style={{
+                    marginLeft: '0.5rem',
                     color: theme === "professional" ? 'var(--primary-color)' : '#00ff00',
                     fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
                     fontWeight: 600,
@@ -813,22 +669,7 @@ function LoginContent() {
                     textDecoration: 'underline'
                   }}
                 >
-                  {theme === "professional" ? "Hier registrieren" : "[CREATE_NEW_ACCOUNT]"}
-                </Link>
-              </div>
-              
-              <div>
-                <Link 
-                  href="/reset-password"
-                  style={{
-                    color: theme === "professional" ? 'var(--text-secondary)' : '#00ff00',
-                    fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
-                    fontSize: '0.75rem',
-                    textDecoration: 'underline',
-                    opacity: 0.7
-                  }}
-                >
-                  {theme === "professional" ? "Passwort vergessen?" : "[FORGOT_PASSWORD?]"}
+                  {theme === "professional" ? "Registrieren" : "[REGISTER]"}
                 </Link>
               </div>
             </motion.div>
