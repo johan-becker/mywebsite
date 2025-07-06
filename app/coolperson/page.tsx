@@ -65,10 +65,11 @@ export default function CoolPerson() {
     <div className="min-h-screen p-8" style={{
       background: theme === "professional" 
         ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-        : 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)'
+        : 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+      paddingTop: "calc(5rem + 2rem)"
     }}>
       {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden" style={{ top: "5rem" }}>
         {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
@@ -106,6 +107,7 @@ export default function CoolPerson() {
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
             className="mb-6"
+            style={{ marginTop: "2rem" }}
           >
             <Crown 
               size={80} 
