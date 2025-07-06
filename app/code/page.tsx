@@ -72,7 +72,6 @@ function CodeContent() {
     try {
       const payload = {
         code: verificationCode,
-        type: verificationData.type,
         ...(verificationData.type === 'email' 
           ? { email: verificationData.emailOrPhone } 
           : { phone: verificationData.emailOrPhone })
@@ -95,10 +94,46 @@ function CodeContent() {
       // Clear verification data from localStorage
       localStorage.removeItem('codeVerificationData');
 
+      // Handle session creation
+      if (data.access_token && data.refresh_token) {
+        // Set the session using the tokens
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: data.access_token,
+          refresh_token: data.refresh_token
+        });
+
+        if (sessionError) {
+          throw new Error('Failed to create session');
+        }
+      } else if (data.requiresClientLogin && data.email) {
+        // Fallback: attempt to sign in with the email (passwordless)
+        const { error: signInError } = await supabase.auth.signInWithOtp({
+          email: data.email,
+          options: {
+            shouldCreateUser: false
+          }
+        });
+
+        if (signInError) {
+          console.warn('Fallback sign-in failed, proceeding anyway');
+        }
+      }
+
       // Check if user has 2FA enabled
-      const { data: { user } } = await supabase.auth.getUser();
-      const userMetadata = user?.user_metadata || {};
-      const twoFactorEnabled = userMetadata.two_factor_enabled;
+      let twoFactorEnabled = false;
+      if (data.user && data.user.user_metadata) {
+        twoFactorEnabled = data.user.user_metadata.two_factor_enabled || false;
+      } else {
+        // Try to get current user data
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && user.user_metadata) {
+            twoFactorEnabled = user.user_metadata.two_factor_enabled || false;
+          }
+        } catch (error) {
+          console.warn('Could not check 2FA status');
+        }
+      }
 
       if (twoFactorEnabled) {
         // Redirect to 2FA page
