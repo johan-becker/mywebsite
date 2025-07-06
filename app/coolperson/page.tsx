@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { useTheme } from '@/components/ThemeProvider';
 import { motion } from 'framer-motion';
-import { Trophy, Star, Zap, Crown, Sparkles, Home, LogOut } from 'lucide-react';
+import { Trophy, Star, Zap, Crown, Sparkles, Home, LogOut, Settings, User as UserIcon } from 'lucide-react';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -253,7 +253,49 @@ export default function CoolPerson() {
               }
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push('/settings/profile')}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg transition-all"
+                style={{
+                  background: theme === "professional" 
+                    ? 'rgba(59, 130, 246, 0.9)'
+                    : 'linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.4))',
+                  border: theme === "professional" 
+                    ? 'none'
+                    : '2px solid rgba(0, 255, 255, 0.7)',
+                  color: theme === "professional" ? '#ffffff' : '#00ffff',
+                  fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                  fontWeight: 600,
+                }}
+              >
+                <UserIcon size={20} />
+                {theme === "professional" ? "Profil" : ">>> PROFILE"}
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push('/settings/security')}
+                className="flex items-center gap-2 px-6 py-3 rounded-lg transition-all"
+                style={{
+                  background: theme === "professional" 
+                    ? 'rgba(168, 85, 247, 0.9)'
+                    : 'linear-gradient(45deg, rgba(255, 0, 255, 0.2), rgba(255, 0, 255, 0.4))',
+                  border: theme === "professional" 
+                    ? 'none'
+                    : '2px solid rgba(255, 0, 255, 0.7)',
+                  color: theme === "professional" ? '#ffffff' : '#ff00ff',
+                  fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                  fontWeight: 600,
+                }}
+              >
+                <Settings size={20} />
+                {theme === "professional" ? "Sicherheit" : ">>> SECURITY"}
+              </motion.button>
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -272,7 +314,7 @@ export default function CoolPerson() {
                 }}
               >
                 <Home size={20} />
-                {theme === "professional" ? "Zur Startseite" : ">>> RETURN_TO_MAIN"}
+                {theme === "professional" ? "Startseite" : ">>> HOME"}
               </motion.button>
 
               <motion.button

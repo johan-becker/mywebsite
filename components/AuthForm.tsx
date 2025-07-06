@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from '@/components/ThemeProvider';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, User, Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, LogIn, UserPlus, Phone } from 'lucide-react';
 
 interface AuthFormProps {
   mode: 'login' | 'signup';
@@ -19,6 +19,7 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,16 +32,18 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
       const hiddenEmail = document.getElementById('hidden-email') as HTMLInputElement;
       const hiddenPassword = document.getElementById('hidden-password') as HTMLInputElement;
       const hiddenName = document.getElementById('hidden-name') as HTMLInputElement;
+      const hiddenPhone = document.getElementById('hidden-phone') as HTMLInputElement;
       const hiddenConfirm = document.getElementById('hidden-confirmPassword') as HTMLInputElement;
 
       if (hiddenEmail) hiddenEmail.value = email;
       if (hiddenPassword) hiddenPassword.value = password;
       if (hiddenName && mode === 'signup') hiddenName.value = fullName;
+      if (hiddenPhone && mode === 'signup') hiddenPhone.value = phoneNumber;
       if (hiddenConfirm && mode === 'signup') hiddenConfirm.value = confirmPassword;
     };
 
     syncHiddenFields();
-  }, [email, password, fullName, confirmPassword, mode]);
+  }, [email, password, fullName, phoneNumber, confirmPassword, mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +72,7 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
           options: {
             data: {
               full_name: fullName,
+              phone_number: phoneNumber,
             },
             emailRedirectTo: `${window.location.origin}/auth/callback`
           }
@@ -157,16 +161,28 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
         onSubmit={handleSubmit}
       >
         {mode === 'signup' && (
-          <input 
-            type="text" 
-            name="name" 
-            id="hidden-name"
-            autoComplete="name" 
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            tabIndex={-1}
-            data-lpignore="false"
-          />
+          <>
+            <input 
+              type="text" 
+              name="name" 
+              id="hidden-name"
+              autoComplete="name" 
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              tabIndex={-1}
+              data-lpignore="false"
+            />
+            <input 
+              type="tel" 
+              name="phone" 
+              id="hidden-phone"
+              autoComplete="tel" 
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              tabIndex={-1}
+              data-lpignore="false"
+            />
+          </>
         )}
         <input 
           type="email" 
@@ -319,6 +335,61 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
                   }}
                   className={theme === "matrix" ? "cyber-input" : ""}
                 />
+            </motion.div>
+          )}
+
+          {mode === 'signup' && (
+            <motion.div variants={fieldVariants}>
+              <label 
+                htmlFor="phoneNumber"
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: 600,
+                  fontFamily: theme === "professional" ? 'var(--font-primary)' : 'Orbitron, monospace',
+                  color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                  fontSize: '0.875rem'
+                }}
+              >
+                <Phone className="w-4 h-4 inline mr-2" />
+                {theme === "professional" ? "Telefonnummer" : "PHONE_NUMBER"}
+                <span style={{ 
+                  fontSize: '0.75rem', 
+                  opacity: 0.7,
+                  marginLeft: '0.5rem',
+                  fontStyle: 'italic'
+                }}>
+                  {theme === "professional" ? "(optional)" : "(OPTIONAL)"}
+                </span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                id="phoneNumber"
+                autoComplete="tel"
+                data-lpignore="false"
+                data-form-type="other"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder={theme === "professional" ? "+49 123 456 7890" : "+1234567890"}
+                style={{
+                  width: '100%',
+                  padding: '1rem',
+                  background: theme === "professional" 
+                    ? 'var(--background-secondary)'
+                    : 'rgba(0, 0, 0, 0.3)',
+                  border: theme === "professional" 
+                    ? '1px solid var(--border-color)'
+                    : '2px solid rgba(0, 255, 0, 0.3)',
+                  borderRadius: theme === "professional" ? '8px' : '0',
+                  color: theme === "professional" ? 'var(--text-primary)' : '#00ff00',
+                  fontFamily: theme === "professional" ? 'var(--font-secondary)' : 'monospace',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  transition: 'all 0.3s ease'
+                }}
+                className={theme === "matrix" ? "cyber-input" : ""}
+              />
             </motion.div>
           )}
 
