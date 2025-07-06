@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Code, Briefcase, Terminal } from "lucide-react";
+import { Menu, X, Code, Briefcase, Terminal, UserPlus } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -134,6 +134,28 @@ export default function Navigation() {
                 )}
               </Link>
             ))}
+            <Link
+              href="/register"
+              className="relative group"
+              style={{
+                color: theme === "professional" ? "var(--text-secondary)" : "#00ff00",
+                fontFamily: theme === "professional" ? "var(--font-secondary)" : "monospace",
+                fontSize: "0.875rem",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.5rem 1rem",
+                borderRadius: theme === "professional" ? "6px" : "0",
+                transition: "all 0.3s ease",
+                border: theme === "professional" ? "1px solid var(--border-color)" : "1px solid rgba(0, 255, 0, 0.3)",
+                background: theme === "professional" ? "var(--background-card)" : "rgba(0, 20, 0, 0.3)",
+                backdropFilter: "blur(10px)"
+              }}
+            >
+              <UserPlus size={16} />
+              {theme === "professional" ? "Registrieren" : "REGISTER"}
+            </Link>
           </div>
 
           {/* Theme Toggle & Mobile Menu Button */}
